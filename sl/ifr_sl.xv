@@ -1,0 +1,46 @@
+﻿auxilium attributum (meta.attributum_nomen_moduli)		= "Systema Limarum per IFR";
+auxilium attributum (meta.attributum_creator_moduli)	= "Engine Software";
+auxilium attributum (meta.attributum_iura_exempli)		= "© Engine Software. 2026";
+auxilium attributum (meta.attributum_versio)			= "1.0.0.1";
+
+[[systema] librosa]
+
+importa ifr;
+importa limae;
+
+spatium remota {
+	spatium systema_limarum {
+		enumeratio genus_objecti hereditat nint { ignotus = 0, lima = 1, collectorium = 2 }
+		[[ifr]] genus lima hereditat remota.objectum {
+			// Метаданные расположения
+			linea nomen { adipisce iacit virtualis pura; }
+			nint modus { adipisce iacit virtualis pura; }
+			// Свойства файла
+			nint64 longitudo { adipisce iacit virtualis pura; loca iacit virtualis pura; }
+			(tempus, tempus, tempus) tempi { adipisce iacit virtualis pura; loca iacit virtualis pura; }
+			(nint, nint, nint) permissiones { adipisce iacit virtualis pura; loca iacit virtualis pura; }
+			// Данные файла
+			functio dordo_datorum lege(nint64 pos, int long) iacit virtualis pura;
+			functio nihil scribe(nint64 pos, ~dordo_datorum data) iacit virtualis pura;
+			dordo_datorum digestum_sha_256 { adipisce iacit virtualis pura; }
+		}
+		[[ifr]] genus locatio hereditat remota.objectum {
+			// Метаданные расположения
+			linea nomen { adipisce iacit virtualis pura; }
+			nint modus { adipisce iacit virtualis pura; }
+			// Получение информации
+			(nint64, nint64, nint64) quota { adipisce iacit virtualis pura; }
+			ordo (linea, nint) filii { adipisce iacit virtualis pura; }
+			// Чтение дочерних элементов
+			functio !locatio aperi_locationem(~linea nomen, nint modus) iacit virtualis pura;
+			functio !lima aperi_limam(~linea nomen, nint modus) iacit virtualis pura;
+			// Управление дочерними элементами
+			functio nihil crea_filium(~linea nomen, nint genu) iacit virtualis pura;
+			functio nihil move_filium(~linea nomen, ~linea nomen_novum, !locatio ad) iacit virtualis pura;
+			functio nihil remove_filium(~linea nomen) iacit virtualis pura;
+		}
+		[[ifr]] genus authorizator hereditat remota.objectum {
+			functio ordo !locatio authoriza(~linea usor, ~linea clavis) iacit virtualis pura;
+		}
+	}
+}

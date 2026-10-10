@@ -1,0 +1,123 @@
+﻿auxilium attributum (meta.attributum_nomen_moduli)		= "Systema Limarum per IFR - Liber Usoris";
+auxilium attributum (meta.attributum_creator_moduli)	= "Engine Software";
+auxilium attributum (meta.attributum_iura_exempli)		= "© Engine Software. 2026";
+auxilium attributum (meta.attributum_versio)			= "1.0.0.1";
+
+[[systema] librosa]
+
+importa ifr_sl;
+
+spatium remota {
+	spatium systema_limarum {
+		genus sessio hereditat objectum {
+			!contextus.cauda_simplex _cauda;
+			!contextus.filum _filum;
+			!remota.servus _servus;
+			!authorizator _auth;
+			structor (@communicatio.canale cnl) iacit {
+				_cauda = contextus.crea_caudam_simplicem();
+				si (!_cauda) {
+					proba cnl^.clode(sic);
+					iace errores.memoria_nulla;
+				}
+				_filum = _cauda^.exeque_in_filo();
+				si (!_filum) {
+					proba cnl^.clode(sic);
+					iace errores.memoria_nulla;
+				}
+				proba {
+					_servus = crea(remota.servus, cnl, _cauda);
+					_servus^.exeque();
+				} cape (nintadl e, nintadl se) {
+					proba _cauda^.siste();
+					_filum^.opperire();
+					proba cnl^.clode(sic);
+					iace e, se;
+				}
+				proba {
+					_auth = remota.crea_exemplar(_servus, authorizator) acsi (authorizator);
+				} cape (nintadl e, nintadl se) {
+					proba _servus^.clode();
+					proba _cauda^.siste();
+					_filum^.opperire();
+					iace e, se;
+				}
+			}
+			destructor () {
+				proba _servus^.clode();
+				proba _cauda^.linque();
+				_filum^.opperire();
+			}
+			functio ordo !locatio authoriza(~linea usor, ~linea clavis) iacit {
+				responde _auth^.authoriza(usor, clavis);
+			}
+		}
+		functio !sessio crea_sessionem(~communicatio.adloquium adloq) iacit {
+			var cnl = communicatio.crea_canale();
+			cnl^.conjunge_synchrone(adloq);
+			responde crea(sessio, cnl);
+		}
+		functio !sessio crea_sessionem(~communicatio.adloquium adloq, ~communicatio.securitas sec) iacit {
+			var cnl = communicatio.crea_canale();
+			cnl^.conjunge_synchrone(adloq, sec);
+			responde crea(sessio, cnl);
+		}
+		genus flumen_remotum hereditat flumen {
+			!lima _lm;
+			nint64 _fpos;
+			structor (@lima lm) { funda _fpos(0); _lm.contine(lm); }
+			functio int lege(@nihil data, int long) iacit redefini {
+				si (long < 0) iace errores.argumentum_falsum;
+				alioqui si (long == 0) responde 0;
+				var lectum = _lm^.lege(_fpos, long);
+				memoria.exscribe(data, lectum.data, lectum.longitudo);
+				_fpos += lectum.longitudo;
+				responde lectum.longitudo;
+			}
+			functio nihil scribe(@nihil data, int long) iacit redefini {
+				si (long < 0) iace errores.argumentum_falsum;
+				alioqui si (long == 0) responde;
+				dordo_datorum odata;
+				odata.longitudo = long;
+				memoria.exscribe(odata.data, data, long);
+				_lm^.scribe(_fpos, odata);
+				_fpos += long;
+			}
+			functio int64 quaerita(int64 pos, int org) iacit redefini {
+				int64 long = _lm^.longitudo, pos_nova;
+				si (org == flumen.initus) pos_nova = pos;
+				alioqui si (org == flumen.currens) pos_nova = _fpos + pos;
+				alioqui si (org == flumen.finis) pos_nova = long + pos;
+				alioqui iace errores.argumentum_falsum;
+				si (pos_nova < 0) pos_nova = 0;
+				si (pos_nova > long) pos_nova = long;
+				responde _fpos = pos_nova;
+			}
+			functio nihil annoda() redefini {}
+			int64 longitudo {
+				adipisce iacit redefini { responde _lm^.longitudo; }
+				loca iacit redefini {
+					si (valor < 0) iace errores.argumentum_falsum;
+					_lm^.longitudo = valor;
+					si (_fpos > nint64(valor)) _fpos = valor;
+				}
+			}
+		}
+		functio !flumen_remotum crea_flumen(@lima lm) iacit { responde crea(flumen_remotum, lm); }
+		functio !locatio progrede_ad_locatione(@locatio de, ~linea sem) iacit {
+			!locatio loc;
+			loc.contine(de);
+			var nomina = sem.surroga("\\", "/").scinde('/');
+			per (var i : nomina^) si (nomina^[i].longitudo) loc = loc^.aperi_locationem(nomina^[i], loc^.modus);
+			responde loc;
+		}
+		functio !lima progrede_ad_lima(@locatio de, ~linea sem, nint modus) iacit {
+			var del1 = sem.reperi_ultimum("/"), del2 = sem.reperi_ultimum("\\");
+			var del = del1 > del2 ? del1 : del2;
+			linea lsem, lnom;
+			si (del >= 0) { lsem = sem.fragmentum(0, del); lnom = sem.fragmentum(del + 1, -1); } alioqui lnom = sem;
+			var loc = progrede_ad_locatione(de, lsem);
+			responde loc^.aperi_limam(lnom, modus);
+		}
+	}
+}

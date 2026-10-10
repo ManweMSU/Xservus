@@ -1,0 +1,205 @@
+﻿auxilium attributum (meta.attributum_nomen_moduli)		= "Systema Limarum per IFR - Servus";
+auxilium attributum (meta.attributum_creator_moduli)	= "Engine Software";
+auxilium attributum (meta.attributum_iura_exempli)		= "© Engine Software. 2026";
+auxilium attributum (meta.attributum_versio)			= "1.0.0.1";
+
+[[systema] librosa]
+
+importa ifr_sl;
+importa cryptographia_nativa;
+
+spatium remota {
+	spatium systema_limarum {
+		spatium servus {
+			functio !contextus.semaphorum _crea_semaphorum_x(int32 valor) iacit { var r = contextus.crea_semaphorum(valor); si (!r) iace errores.memoria_nulla; responde r; }
+			var !contextus.semaphorum _sync = _crea_semaphorum_x(1);
+			var collectiones.dictionarium[linea, (linea, ordo (semita, linea, nint))] _usores;
+
+			structura _lima hereditat remota.systema_limarum.lima {
+				!flumen_limae _fl;
+				linea _nomen;
+				nint _modus;
+				nint _meta_modus;
+				
+				linea nomen { adipisce iacit redefini { responde _nomen; } }
+				nint modus { adipisce iacit redefini { responde _modus; } }
+				nint64 longitudo { 
+					adipisce iacit redefini {
+						si (_meta_modus & modus_limae.legere == 0) iace errores.ie_falsum, errores.ie_permissio_nulla;
+						responde _fl^.longitudo;
+					} loca iacit redefini {
+						si (_modus & modus_limae.scribere == 0) iace errores.ie_falsum, errores.ie_permissio_nulla;
+						_fl^.longitudo = valor;
+					}
+				}
+				(tempus, tempus, tempus) tempi {
+					adipisce iacit redefini {
+						si (_meta_modus & modus_limae.legere == 0) iace errores.ie_falsum, errores.ie_permissio_nulla;
+						responde (_fl^.tempus_creaturae, _fl^.tempus_alternationis, _fl^.tempus_apertionis);
+					} loca iacit redefini {
+						si (_meta_modus & modus_limae.scribere == 0) iace errores.ie_falsum, errores.ie_permissio_nulla;
+						_fl^.tempus_creaturae = valor.primus;
+						_fl^.tempus_alternationis = valor.secundus;
+						_fl^.tempus_apertionis = valor.tertius;
+					}
+				}
+				(nint, nint, nint) permissiones {
+					adipisce iacit redefini {
+						si (_meta_modus & modus_limae.legere == 0) iace errores.ie_falsum, errores.ie_permissio_nulla;
+						responde (nint(int(_fl^.aditus_moderatoris)), nint(int(_fl^.aditus_grupi)), nint(int(_fl^.aditus_populum)));
+					} loca iacit redefini {
+						si (_meta_modus & modus_limae.scribere == 0) iace errores.ie_falsum, errores.ie_permissio_nulla;
+						_fl^.aditus_moderatoris = int(valor.primus);
+						_fl^.aditus_grupi = int(valor.secundus);
+						_fl^.aditus_populum = int(valor.tertius);
+					}
+				}
+				functio dordo_datorum lege(nint64 pos, int long) iacit redefini {
+					si (long < 0) iace errores.argumentum_falsum;
+					si (_modus & modus_limae.legere == 0) iace errores.ie_falsum, errores.ie_permissio_nulla;
+					_fl^.quaerita(pos, flumen.initus);
+					dordo_datorum responsum;
+					responsum.longitudo = long;
+					responsum.longitudo = _fl^.lege(responsum.data, responsum.longitudo);
+					responde responsum;
+				}
+				functio nihil scribe(nint64 pos, ~dordo_datorum data) iacit redefini {
+					si (_modus & modus_limae.scribere == 0) iace errores.ie_falsum, errores.ie_permissio_nulla;
+					_fl^.quaerita(pos, flumen.initus);
+					_fl^.scribe(data.data, data.longitudo);
+				}
+				dordo_datorum digestum_sha_256 { adipisce iacit redefini {
+					si (_modus & modus_limae.legere == 0) iace errores.ie_falsum, errores.ie_permissio_nulla;
+					_fl^.quaerita(0, flumen.initus);
+					responde cryptographia.procede_digestum(_fl, 32)^;
+				} }
+			}
+			structura _locatio hereditat remota.systema_limarum.locatio {
+				semita _obj;
+				linea _nomen;
+				nint _modus;
+
+				functio logicum _proba_nominem(~linea nomen) iacit {
+					si (nomen.reperi_primum("/") >= 0 || nomen.reperi_primum("\\") >= 0 || nomen.fragmentum(0, 2) == "..") responde non;
+					responde sic;
+				}
+				linea nomen { adipisce iacit redefini { responde _nomen; } }
+				nint modus { adipisce iacit redefini { responde _modus; } }
+				(nint64, nint64, nint64) quota { adipisce iacit redefini {
+					si (_modus & modus_limae.exequi == 0) iace errores.ie_falsum, errores.ie_permissio_nulla;
+					responde (_obj.memoria, _obj.memoria_libera, _obj.memoria_moderatoris_libera);
+				} }
+				ordo (linea, nint) filii { adipisce iacit redefini {
+					si (_modus & modus_limae.legere == 0) iace errores.ie_falsum, errores.ie_permissio_nulla;
+					ordo (linea, nint) responsum;
+					var collectoria = _obj.collectoria();
+					var limae = _obj.limae();
+					per (var i : collectoria^) responsum.adde((semita(collectoria^[i]).nomen, genus_objecti.collectorium));
+					per (var i : limae^) responsum.adde((semita(limae^[i]).nomen, genus_objecti.lima));
+					responde responsum;
+				} }
+				functio !locatio aperi_locationem(~linea nomen, nint modus) iacit redefini {
+					si (!_proba_nominem(nomen)) iace errores.argumentum_falsum;
+					si (modus & _modus != modus) iace errores.ie_falsum, errores.ie_permissio_nulla;
+					var loc = crea(_locatio);
+					loc^._obj = semita(_obj, nomen);
+					loc^._nomen = _nomen + "/" + nomen;
+					loc^._modus = modus;
+					si (!loc^._obj.collectorium_est) iace errores.ie_falsum, errores.ie_semita_nulla;
+					!locatio lloc;
+					lloc.contine(loc);
+					responde lloc;
+				}
+				functio !lima aperi_limam(~linea nomen, nint modus) iacit redefini {
+					si (!_proba_nominem(nomen)) iace errores.argumentum_falsum;
+					si (modus & _modus != modus) iace errores.ie_falsum, errores.ie_permissio_nulla;
+					semita dest(_obj, nomen);
+					si (!dest.lima_est) iace errores.ie_falsum, errores.ie_lima_nulla;
+					var lim = crea(_lima);
+					lim^._fl = dest.crea_limam(int(modus), modus_creatoris.aperi_praesens);
+					lim^._nomen = _nomen + "/" + nomen;
+					lim^._modus = modus;
+					lim^._meta_modus = _modus;
+					!lima llim;
+					llim.contine(lim);
+					responde llim;
+				}
+				functio nihil crea_filium(~linea nomen, nint genu) iacit redefini {
+					si (_modus & modus_limae.scribere == 0) iace errores.ie_falsum, errores.ie_permissio_nulla;
+					si (!_proba_nominem(nomen)) iace errores.argumentum_falsum;
+					semita dest(_obj, nomen);
+					si (genu == genus_objecti.lima) dest.crea_limam(modus_limae.modus_nullus, modus_creatoris.crea_nova);
+					alioqui si (genu == genus_objecti.collectorium) dest.crea_collectorium();
+					alioqui iace errores.argumentum_falsum;
+				}
+				functio nihil move_filium(~linea nomen, ~linea nomen_novum, !locatio ad) iacit redefini {
+					si (!_proba_nominem(nomen) || !_proba_nominem(nomen_novum)) iace errores.argumentum_falsum;
+					si (ad && ad^.remotum_est) iace errores.ie_falsum, errores.ie_machinatio_idem_non;
+					var d = (@_locatio)(ad.valor());
+					si (d == nullus) d = ego;
+					si (_modus & modus_limae.scribere == 0 || d^._modus & modus_limae.scribere == 0) iace errores.ie_falsum, errores.ie_permissio_nulla;
+					semita(_obj, nomen).move(semita(d^._obj, nomen_novum));
+				}
+				functio nihil remove_filium(~linea nomen) iacit redefini {
+					si (_modus & modus_limae.scribere == 0) iace errores.ie_falsum, errores.ie_permissio_nulla;
+					si (!_proba_nominem(nomen)) iace errores.argumentum_falsum;
+					semita dest(_obj, nomen);
+					si (dest.lima_est) dest.remove();
+					alioqui si (dest.collectorium_est) dest.remove_collectoriorum();
+					alioqui iace errores.argumentum_falsum;
+				}
+			}
+			[(remota.attributa.exportatum) "remota.systema_limarum.authorizator"]
+			structura _authorizator hereditat remota.systema_limarum.authorizator {
+				functio ordo !locatio authoriza(~linea usor, ~linea clavis) iacit redefini {
+					ordo !locatio responsum;
+					_sync^.opperire();
+					proba {
+						var u = _usores[usor];
+						si (u == nullus || u^.primus != clavis) iace errores.argumentum_falsum;
+						per (var i : u^.secundus) {
+							var ~ oloc = u^.secundus[i];
+							var loc = crea(_locatio);
+							loc^._obj = oloc.primus;
+							loc^._nomen = oloc.secundus;
+							loc^._modus = oloc.tertius;
+							!locatio lloc;
+							lloc.contine(loc);
+							responsum.adde(lloc);
+						}
+					} cape (nintadl e, nintadl se) {
+						_sync^.aperi();
+						iace e, se;
+					}
+					_sync^.aperi();
+					responde responsum;
+				}
+			}
+			functio nihil adde(~linea nomen_usoris, ~linea clavis) iacit {
+				_sync^.opperire();
+				proba {
+					genus(_usores.genus_objectum.secundus) data;
+					data.primus = clavis;
+					si (!_usores.adde(nomen_usoris, data)) iace errores.ie_falsum, errores.ie_lima_preexistat;
+				} cape (nintadl e, nintadl se) {
+					_sync^.aperi();
+					iace e, se;
+				}
+				_sync^.aperi();
+			}
+			functio nihil permitte(~linea nomen_usoris, ~semita sem, ~linea nomen, nint modus) iacit {
+				si (!sem.collectorium_est) iace errores.argumentum_falsum;
+				_sync^.opperire();
+				proba {
+					var u = _usores[nomen_usoris];
+					si (u == nullus) iace errores.ie_falsum, errores.ie_lima_nulla;
+					u^.secundus.adde((sem, nomen, modus));
+				} cape (nintadl e, nintadl se) {
+					_sync^.aperi();
+					iace e, se;
+				}
+				_sync^.aperi();
+			}
+		}
+	}
+}

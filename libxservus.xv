@@ -1,0 +1,31 @@
+﻿auxilium attributum (meta.attributum_nomen_moduli)		= "Liber X Servi";
+auxilium attributum (meta.attributum_iura_exempli)		= "© Engine Software. 2026";
+auxilium attributum (meta.attributum_creator_moduli)	= "Engine Software";
+auxilium attributum (meta.attributum_versio)			= "1.0.0.1";
+
+[[systema] librosa]
+
+importa http;
+
+spatium xservus {
+	genus extensio hereditat objectum_dynamicum {
+		structor () {}
+		@nihil genus_extensionis_radicalis { adipisce virtualis pura; }
+		@extensio extensio_radicalis { adipisce virtualis pura; }
+		!collectiones.dictionarium[linea, linea] argumenta { adipisce iacit virtualis pura; }
+		functio nihil ini(@extensio basis, ~collectiones.dictionarium[linea, linea] arg) iacit virtualis pura;
+		functio nihil post_ini() iacit virtualis pura;
+		functio nihil siste() virtualis pura;
+	}
+	genus servus hereditat objectum_dynamicum {
+		structor () {}
+		@contextus.cauda cauda_communalis { adipisce virtualis pura; }
+		@contextus.cauda cauda_terminalis { adipisce virtualis pura; }
+		functio nihil siste() virtualis pura;
+		functio !ordo !extensio para_extensiones() iacit virtualis pura;
+		functio !ordo !extensio para_extensiones(@extensio basis) iacit virtualis pura;
+	}
+
+	var !servus __servus;
+	functio @servus para_servum() { responde __servus; }
+}

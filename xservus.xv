@@ -1,0 +1,176 @@
+﻿auxilium attributum (meta.attributum_nomen_moduli)		= "X Servus";
+auxilium attributum (meta.attributum_iura_exempli)		= "© Engine Software. 2026";
+auxilium attributum (meta.attributum_creator_moduli)	= "Engine Software";
+auxilium attributum (meta.attributum_versio)			= "1.0.0.1";
+
+[[systema] nulla]
+
+importa libxservus;
+importa formati;
+importa limae;
+importa xesl;
+importa lxx;
+
+spatium xservus {
+	structura impl_servus hereditat servus {
+		!contextus.cauda_filorum cauda;
+		!contextus.cauda_simplex cauda2;
+		!contextus.signale finis;
+		ordo !extensio extensiones;
+
+		@contextus.cauda cauda_communalis { adipisce redefini { responde cauda; } }
+		@contextus.cauda cauda_terminalis { adipisce redefini { responde cauda2; } }
+		functio nihil siste() redefini { finis^.erige(); }
+		functio !ordo !extensio para_extensiones() iacit redefini {
+			var r = crea(ordo !extensio);
+			per (var i : extensiones) r^.adde(extensiones[i]);
+			responde r;
+		}
+		functio !ordo !extensio para_extensiones(@extensio basis) iacit redefini {
+			var r = crea(ordo !extensio);
+			per (var i : extensiones) si (extensiones[i]^.extensio_radicalis == basis) r^.adde(extensiones[i]);
+			responde r;
+		}
+
+		structura supervisor hereditat extensio {
+			collectiones.dictionarium[linea, linea] _argumenta;
+			!communicatio.attentor _attentor;
+			!contextus.semaphorum _synch;
+			ordo !communicatio.canale _can;
+			structor () iacit { _synch = contextus.crea_semaphorum(1); si (!_synch) iace errores.memoria_nulla; actuarius.scribe("SUPERVISOR CREATUS EST"); }
+			destructor() { proba actuarius.scribe("SUPERVISOR CLOSUS EST"); }
+			@nihil genus_extensionis_radicalis { adipisce redefini { responde nullus; } }
+			@extensio extensio_radicalis { adipisce redefini { responde nullus; } }
+			!collectiones.dictionarium[linea, linea] argumenta { adipisce iacit redefini { responde crea(collectiones.dictionarium[linea, linea], _argumenta); } }
+			functio nihil ini(@extensio basis, ~collectiones.dictionarium[linea, linea] arg) iacit redefini {
+				_argumenta = arg;
+				var adl_nomen = _argumenta["nomen"];
+				linea nomen = adl_nomen != nullus ? linea(adl_nomen^) : "xservus";
+				_attentor = communicatio.crea_attentorem();
+				_attentor^.adnecte(communicatio.adloquium_localis(nomen));
+				proba communicatio.accipe_canale(_attentor, -1) { proba {
+					si (status_operationis.error) {
+						linea de, dse;
+						errores.descriptio(status_operationis.error, status_operationis.suberror, de, dse);
+						actuarius.scribe("ERROR ACCIPENDI CANALIS: " + de + " (" + dse + ")");
+					} alioqui {
+						_synch^.opperire();
+						proba _can.adde(canale_novum); cape {
+							_synch^.aperi();
+							proba canale_novum^.clode(sic);
+							responde;
+						}
+						_synch^.aperi();
+						_procede(canale_novum);
+					}
+				} }; cape (nintadl e, nintadl se) {
+					proba _attentor^.clode();
+					iace e, se;
+				}
+			}
+			functio nihil post_ini() iacit redefini {}
+			functio nihil siste() redefini {
+				_synch^.opperire();
+				si (_attentor) proba _attentor^.clode(); _attentor.depura();
+				per (var i : _can) proba _can[i]^.clode(sic);
+				_can.depura();
+				_synch^.aperi();
+			}
+			functio nihil _procede(!communicatio.canale canale) {
+
+				// TODO: PROCESS PROTOCOL
+
+			}
+		}
+	}
+
+	functio !formati.tabularium onera_configurationem() iacit {
+		var a = para_argumenta();
+		var b = a^.longitudo > 1 ? semita(a^[1]) : semita("xservus.ini");
+		var c = formati.tabularium.onera(b.crea_limam(modus_limae.legere, modus_creatoris.aperi_praesens));
+		responde c;
+	}
+	functio nihil onera_modulos(@formati.tabularium configuratio) iacit {
+
+		// TODO: LOAD MODULES
+
+	}
+	functio !extensio crea_extensionem(~impl_servus srv, ~linea cls, @extensio basis, ~collectiones.dictionarium[linea, linea] arg) iacit {
+		var clss = repulsus.para_symbolum(modulus(), cls);
+		si (clss^.classis_symboli != repulsus.symbola.generis) {
+			actuarius.scribe("ERROR: SYMBOLUM " + cls + " GENUS NON EST");
+			iace errores.argumentum_falsum;
+		}
+		var clsg = clss acsi (repulsus.symbolum_generis);
+		var pp = clsg^.parentes;
+		var extensio_sum = non;
+		per (var i : pp^) si (pp^[i]^.manubrium == xservus.extensio) { extensio_sum = sic; exi; }
+		si (!extensio_sum) {
+			actuarius.scribe("ERROR: GENUS " + clsg^.nomen + " EXTENSIO NON EST");
+			iace errores.argumentum_falsum;
+		}
+		repulsus.fabricatio_objectorum fab(clsg);
+		var exto = fab.crea_exemplar();
+		!extensio ext;
+		ext.contine((@extensio)(exto.valor()));
+		srv.extensiones.adde(ext);
+		var genr = ext^.genus_extensionis_radicalis;
+		si (genr != nullus) {
+			// TODO: REWORK PARENTING
+			var genro = repulsus.expone_genus(modulus(), genr);
+
+			//genro^.symbolum^.nomen;
+		}
+		ext^.ini(basis, arg);
+		responde ext;
+	}
+	functio nihil crea_extensiones(~impl_servus srv, @formati.tabularium configuratio) iacit {
+		collectiones.dictionarium[linea, linea] arg;
+		var nomen_servi = configuratio^["Nomen"] acsi (linea)^;
+		si (!nomen_servi.longitudo) nomen_servi = "xservus";
+		arg.adde("nomen", nomen_servi);
+		crea_extensionem(srv, "xservus.impl_servus.supervisor", nullus, arg);
+		var subn = configuratio^.subnodi;
+		per (var i : subn) {
+
+		}
+
+		// TODO: CREATE AND INITIALIZE EXTENSIONS
+
+	}
+	functio nihil exeque() introitus iacit {
+		proba {
+			var s = crea(impl_servus);
+			semita.modulus_primus().parens.loca_currentem();
+			var configuratio = onera_configurationem();
+			s^.cauda = contextus.crea_caudam_filorum(configuratio^["NumerusFilorum"] acsi (int)^);
+			s^.finis = contextus.crea_signale();
+			s^.cauda2 = contextus.crea_caudam_simplicem();
+			si (!s^.cauda || !s^.finis || !s^.cauda2) iace errores.memoria_nulla;
+			__servus.contine(s);
+			onera_modulos(configuratio);
+			proba {
+				crea_extensiones(s^, configuratio);
+				// TODO: REWORK
+				//per (var i : s^.extensiones) s^.extensiones[i]^.post_ini();
+			} cape (nintadl e, nintadl se) {
+				s^.finis^.erige();
+				linea de, dse;
+				errores.descriptio(e, se, de, dse);
+				actuarius.scribe("ERROR EXTENSIONES INITIALIZANDI: " + de + " (" + dse + ")");
+			}
+			s^.finis^.opperire();
+			per (var i : s^.extensiones) s^.extensiones[i]^.siste();
+			s^.cauda^.opperire();
+			s^.extensiones.depura();
+			s^.cauda.depura();
+			s^.cauda2^.linque();
+			s^.cauda2^.exeque();
+		} cape (nintadl e, nintadl se) {
+			linea de, dse;
+			errores.descriptio(e, se, de, dse);
+			actuarius.scribe("ERROR GLOBALIS: " + de + " (" + dse + ")");
+			iace e, se;
+		}
+	}
+}

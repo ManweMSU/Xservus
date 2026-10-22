@@ -25,6 +25,18 @@ spatium xservus {
 		functio !ordo !extensio para_extensiones() iacit virtualis pura;
 		functio !ordo !extensio para_extensiones(@extensio basis) iacit virtualis pura;
 	}
+	genus usor hereditat objectum {
+		structor () {}
+		linea nomen { adipisce iacit virtualis pura; }
+		linea clavis { adipisce iacit virtualis pura; }
+		functio nint permissiones(~linea dominatus) iacit virtualis pura;
+	}
+	genus systema_usorum hereditat objectum {
+		structor () {}
+		ordo linea nomina { adipisce iacit virtualis pura; }
+		functio !usor expone(~linea nomen) iacit virtualis pura;
+		functio !usor authoriza(~linea nomen, ~linea clavis) iacit virtualis pura;
+	}
 
 	var !servus __servus;
 	functio @servus para_servum() { responde __servus; }

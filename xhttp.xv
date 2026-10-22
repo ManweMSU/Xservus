@@ -1,0 +1,357 @@
+﻿auxilium attributum (meta.attributum_nomen_moduli)		= "X Servus - Modulus HTTP";
+auxilium attributum (meta.attributum_iura_exempli)		= "© Engine Software. 2026";
+auxilium attributum (meta.attributum_creator_moduli)	= "Engine Software";
+auxilium attributum (meta.attributum_versio)			= "1.0.0.1";
+
+[[systema] librosa]
+[[extensio] "xsxo"]
+
+importa libxservus;
+importa http_servus;
+importa http_servus_limarum;
+
+spatium xservus {
+	structura http hereditat extensio {
+		!.http.servus _servus;
+		collectiones.dictionarium[linea, linea] _argumenta;
+		
+		@nihil genus_extensionis_radicalis { adipisce redefini { responde nullus; } }
+		@extensio extensio_radicalis { adipisce redefini { responde nullus; } }
+		!collectiones.dictionarium[linea, linea] argumenta { adipisce iacit redefini { responde crea(collectiones.dictionarium[linea, linea], _argumenta); } }
+		functio nihil ini(@extensio basis, ~collectiones.dictionarium[linea, linea] arg) iacit redefini {
+			_argumenta = arg;
+			ordo (linea, @.http.extensio_servi) servext;
+			ordo (int, .http.protocollum_servi, communicatio.indentitas) servport;
+			@.http.extensio_servi ee = nullus;
+			int nf = 0;
+			var anf = _argumenta["numerusfilorum"];
+			si (anf != nullus) nf = anf^.ad_int32();
+			var ext = para_servum()^.para_extensiones(ego);
+			per (var i : ext^) {
+				proba {
+					var xp = ext^[i] acsi (http_portus);
+					servport.adde(xp^.portus);
+					dura;
+				}
+				proba {
+					var xe = ext^[i] acsi (http_extensio);
+					si (xe^.extensio_http == nullus) iace errores.habitus_falsus;
+					si (xe^.extensio_errorum) ee = xe^.extensio_http;
+					alioqui servext.adde((xe^.praeverbium, xe^.extensio_http));
+					dura;
+				}
+			}
+			_servus = crea(.http.servus, servext, servport, ee, nf);
+		}
+		functio nihil post_ini() iacit redefini {}
+		functio nihil siste() redefini { si (_servus) _servus^.clode(); }
+	}
+	structura http_portus hereditat extensio {
+		@extensio _parens;
+		collectiones.dictionarium[linea, linea] _argumenta;
+		(int, .http.protocollum_servi, communicatio.indentitas) portus;
+
+		@nihil genus_extensionis_radicalis { adipisce redefini { responde http; } }
+		@extensio extensio_radicalis { adipisce redefini { responde _parens; } }
+		!collectiones.dictionarium[linea, linea] argumenta { adipisce iacit redefini { responde crea(collectiones.dictionarium[linea, linea], _argumenta); } }
+		functio nihil ini(@extensio basis, ~collectiones.dictionarium[linea, linea] arg) iacit redefini {
+			_argumenta = arg;
+			_parens = basis;
+			portus.primus = .http.portus_http;
+			portus.secundus = .http.protocollum_servi.http_ipv4;
+			var aarg = _argumenta["portus"];
+			si (aarg != nullus) portus.primus = aarg^.ad_nint32();
+			aarg = _argumenta["modus"];
+			si (aarg != nullus) {
+				si (aarg^ # "http-ipv4" == 0) portus.secundus = .http.protocollum_servi.http_ipv4;
+				alioqui si (aarg^ # "http-ipv6" == 0) portus.secundus = .http.protocollum_servi.http_ipv6;
+				alioqui si (aarg^ # "https-ipv4" == 0) portus.secundus = .http.protocollum_servi.https_ipv4;
+				alioqui si (aarg^ # "https-ipv6" == 0) portus.secundus = .http.protocollum_servi.https_ipv6;
+				alioqui iace errores.argumentum_falsum;
+			}
+			aarg = _argumenta["indentitas"];
+			si (aarg != nullus) portus.tertius.data = semita(aarg^).crea_limam(modus_limae.legere, modus_creatoris.aperi_praesens)^.lege_ordinem();
+			aarg = _argumenta["clavis"];
+			si (aarg != nullus) portus.tertius.clavis = aarg^;
+		}
+		functio nihil post_ini() iacit redefini {}
+		functio nihil siste() redefini {}
+	}
+	structura http_extensio hereditat extensio {
+		@extensio parens_extensionis;
+		collectiones.dictionarium[linea, linea] argumenta_extensionis;
+		@.http.extensio_servi extensio_http;
+		linea praeverbium;
+		logicum extensio_errorum;
+
+		@nihil genus_extensionis_radicalis { adipisce redefini { responde http; } }
+		@extensio extensio_radicalis { adipisce redefini { responde parens_extensionis; } }
+		!collectiones.dictionarium[linea, linea] argumenta { adipisce iacit redefini { responde crea(collectiones.dictionarium[linea, linea], argumenta_extensionis); } }
+		functio nihil ini(@xservus.extensio basis, ~collectiones.dictionarium[linea, linea] arg) iacit redefini {
+			argumenta_extensionis = arg;
+			parens_extensionis = basis;
+			extensio_errorum = non;
+			extensio_http = nullus;
+			var apraev = argumenta_extensionis["praeverbium"];
+			praeverbium = apraev != nullus ? apraev^ : "/";
+			ini_http();
+		}
+		functio nihil post_ini() iacit redefini {}
+		functio nihil siste() redefini {}
+		functio nihil ini_http() iacit virtualis pura;
+	}
+	structura http_extensio_errorum hereditat http_extensio : .http.extensio_servi {
+		!formati.paginae_linearum _nomina_statorum;
+		linea _basis_paginae;
+
+		functio nihil requisitum_servi_acceptum_est(~.http.descriptio_requisiti desc) iacit redefini {
+			si (desc.methodus == .http.methodus.para || desc.methodus == .http.methodus.caput) {
+				linea nomen_stati;
+				proba nomen_stati = _nomina_statorum^[desc.status]; cape nomen_stati = _nomina_statorum^[0];
+				var data = linea.forma(_basis_paginae, desc.status, nomen_stati, desc.semita_auxilii).codifica(linea.codex.utf8, non);
+				desc.data_ex = crea_flumenem_in_memoria(data^.data, data^.longitudo);
+				desc.tituli_ex.rescribe("Content-Type", "text/html; charset=utf-8");
+			} alioqui si (desc.methodus == .http.methodus.optiones) {
+				desc.tituli_ex.adde("Allow", "GET, HEAD, OPTIONS");
+			}
+		}
+		functio nihil requisitum_servi_initum_est(~.http.descriptio_requisiti desc) iacit redefini {}
+		functio nihil ini_http() iacit redefini {
+			extensio_errorum = sic;
+			extensio_http = ego;
+			_nomina_statorum = formati.paginae_linearum.onera(semita(lege_argumentum("nomina-statorum")).crea_limam(modus_limae.legere, modus_creatoris.aperi_praesens));
+			var lima_basis = lege_argumentum("lima-basis");
+			si (lima_basis.longitudo) {
+				_basis_paginae = scriptio.decodifica(semita(lima_basis).crea_limam(modus_limae.legere, modus_creatoris.aperi_praesens), linea.codex.utf8)^.lege_cunctos();
+			} alioqui _basis_paginae = lege_argumentum("data-basis");
+		}
+		functio linea lege_argumentum(~linea nomen) iacit {
+			var aarg = argumenta_extensionis[nomen];
+			si (aarg != nullus) responde aarg^; alioqui responde "";
+		}
+	}
+	structura http_generator_collectoriorum hereditat extensio : .http.limae.generator_collectoriorum {
+		@extensio parens_extensionis;
+		collectiones.dictionarium[linea, linea] argumenta_extensionis;
+		linea _basis_paginae_radicalis;
+		linea _basis_paginae_non_radicalis;
+		linea _basis_objecti_limae;
+		linea _basis_objecti_collectorii;
+
+		functio nihil lege_argumentum_basis(~linea nomen, ~linea inire) iacit {
+			var a = argumenta_extensionis["lima-" + nomen];
+			si (a != nullus) {
+				inire = scriptio.decodifica(semita(a^).crea_limam(modus_limae.legere, modus_creatoris.aperi_praesens), linea.codex.utf8)^.lege_cunctos();
+			} alioqui {
+				a = argumenta_extensionis["data-" + nomen];
+				si (a != nullus) inire = a^;
+			}
+		}
+		functio nihil genera_data_collectorii(~.http.descriptio_requisiti desc, ~semita semita, int32 longitudo_praeverbii, ~dordo[linea] collectoria, ~dordo[linea] limae, logicum radix) iacit redefini {
+			ordo nint8 data;
+			var n = radix ? linea("/") : semita.fragmentum(longitudo_praeverbii, -1).surroga("\\", "/");
+			var b = desc.semita_auxilii;
+			var l = b.longitudo;
+			si (l && b[l - 1] == '/') b = b.fragmentum(0, l - 1);
+			linea elementi;
+			per (var i : collectoria) {
+				var nomen = .semita(collectoria[i]).nomen;
+				si (nomen[0] == '.') dura;
+				elementi += linea.forma(_basis_objecti_collectorii, b + "/" + .http.codifica_semitam_auxilii(nomen), nomen);
+			}
+			per (var i : limae) {
+				var nomen = .semita(limae[i]).nomen;
+				si (nomen[0] == '.') dura;
+				elementi += linea.forma(_basis_objecti_limae, b + "/" + .http.codifica_semitam_auxilii(nomen), nomen);
+			}
+			var basis = radix ? @_basis_paginae_radicalis : @_basis_paginae_non_radicalis;
+			data.adde(linea.forma(basis^, elementi, n, n.fragmentum(n.reperi_ultimum("/") + 1, -1)).codifica(linea.codex.utf8, non)^);
+			desc.tituli_ex.adde("Content-Type", "text/html; charset=utf-8");
+			desc.data_ex = crea_flumenem_in_memoria(data.data, data.longitudo);
+			desc.status = 200;
+		}
+
+		@nihil genus_extensionis_radicalis { adipisce redefini { responde http_extensio_limarum; } }
+		@extensio extensio_radicalis { adipisce redefini { responde parens_extensionis; } }
+		!collectiones.dictionarium[linea, linea] argumenta { adipisce iacit redefini { responde crea(collectiones.dictionarium[linea, linea], argumenta_extensionis); } }
+		functio nihil ini(@xservus.extensio basis, ~collectiones.dictionarium[linea, linea] arg) iacit redefini {
+			argumenta_extensionis = arg;
+			parens_extensionis = basis;
+			lege_argumentum_basis("basis-radicalis", _basis_paginae_radicalis);
+			lege_argumentum_basis("basis", _basis_paginae_non_radicalis);
+			lege_argumentum_basis("objecti-limae", _basis_objecti_limae);
+			lege_argumentum_basis("objecti-collectorii", _basis_objecti_collectorii);
+		}
+		functio nihil post_ini() iacit redefini {}
+		functio nihil siste() redefini {}
+	}
+	structura http_censor hereditat extensio : .http.limae.censor {
+		@systema_usorum su;
+		@extensio parens_extensionis;
+		collectiones.dictionarium[linea, linea] argumenta_extensionis;
+		collectiones.dictionarium[int, linea] redirecta_portorum;
+		nint cense_permissiones;
+		linea dominatus_require;
+		nint permissiones_require;
+		nint anathemare;
+		nint64 tempus_anathemae;
+		collectiones.dictionarium[linea, (nint, tempus)] anathemae;
+		!contextus.semaphorum synch_anathemarum;
+		
+		functio nint convalida(~.http.descriptio_requisiti desc, @linea tauth) iacit {
+			si (tauth == nullus || tauth^.fragmentum(0, 6) != "Basic ") responde 401;
+			linea au;
+			si (anathemare) {
+				si (desc.usor^.para_classem() == communicatio.adloquium_ipv4) {
+					var a = (@communicatio.adloquium_ipv4)(desc.usor.valor())^;
+					a.portus = 0;
+					au = a.valor_scriptus;
+				} alioqui si (desc.usor^.para_classem() == communicatio.adloquium_ipv6) {
+					var a = (@communicatio.adloquium_ipv6)(desc.usor.valor())^;
+					a.portus = 0;
+					au = a.valor_scriptus;
+				}
+				var t = tempus.currens();
+				synch_anathemarum^.opperire();
+				var adata = anathemae[au];
+				var clode = adata != nullus && adata^.primus >= anathemare && t.momentum - adata^.secundus.momentum < tempus_anathemae;
+				synch_anathemarum^.aperi();
+				si (clode) {
+					desc.tituli_ex.adde("Retry-After", linea(tempus_anathemae / 1000));
+					responde 429;
+				}
+			}
+			var data = communicatio.data_ex_base64(tauth^.fragmentum(6, -1));
+			var auth = linea(data^.data, data^.longitudo, linea.codex.utf8).scinde(':');
+			si (auth^.longitudo != 2) responde 401;
+			var usor = su^.authoriza(auth^[0], auth^[1]);
+			si (!usor) {
+				si (anathemare) {
+					logicum clode = non;
+					synch_anathemarum^.opperire();
+					proba {
+						var adata = anathemae[au];
+						si (adata != nullus) { adata^.primus++; clode = adata^.primus >= anathemare; }
+						alioqui { anathemae.adde(au, (nint(1), tempus.currens())); clode = anathemare == 1; }
+					} cape (nintadl e, nintadl se) {
+						synch_anathemarum^.aperi();
+						iace e, se;
+					}
+					synch_anathemarum^.aperi();
+					si (clode) {
+						desc.tituli_ex.adde("Retry-After", linea(tempus_anathemae / 1000));
+						responde 429;
+					}
+				}
+				responde 401;
+			}
+			si (anathemare) {
+				synch_anathemarum^.opperire();
+				anathemae.remove(au);
+				synch_anathemarum^.aperi();
+			}
+			si (usor^.permissiones(dominatus_require) & permissiones_require == permissiones_require) responde 0;
+			responde 403;
+		}
+		functio logicum cense_requsitum(~.http.descriptio_requisiti desc, ~linea semita) iacit redefini {
+			var rd = redirecta_portorum[desc.portus];
+			si (rd != nullus) {
+				si (!rd^.longitudo) {
+					.http.servus.respue(desc, 403);
+					responde non;
+				} alioqui {
+					.http.servus.redirege(desc, linea.forma(rd^, desc.semita_auxilii));
+					responde non;
+				}
+			} alioqui si (permissiones_require) {
+				var cv = convalida(desc, desc.tituli_in["authorization"]);
+				si (cv) {
+					si (cv == 401) desc.tituli_ex.adde("WWW-Authenticate", "Basic charset=\"UTF-8\"");
+					.http.servus.respue(desc, cv);
+					responde non;
+				} alioqui responde sic;
+			} alioqui responde sic;
+		}
+
+		@nihil genus_extensionis_radicalis { adipisce redefini { responde http_extensio_limarum; } }
+		@extensio extensio_radicalis { adipisce redefini { responde parens_extensionis; } }
+		!collectiones.dictionarium[linea, linea] argumenta { adipisce iacit redefini { responde crea(collectiones.dictionarium[linea, linea], argumenta_extensionis); } }
+		functio nihil ini(@xservus.extensio basis, ~collectiones.dictionarium[linea, linea] arg) iacit redefini {
+			argumenta_extensionis = arg;
+			parens_extensionis = basis;
+			su = para_servum() acsi (systema_usorum);
+			var argumentum = argumenta_extensionis["cense-permissiones"];
+			si (argumentum != nullus) cense_permissiones = argumentum^.ad_nint32(); alioqui cense_permissiones = 0;
+			argumentum = argumenta_extensionis["dominatus-require"];
+			si (argumentum != nullus) dominatus_require = argumentum^;
+			argumentum = argumenta_extensionis["permissiones-require"];
+			si (argumentum != nullus) permissiones_require = argumentum^.ad_nint32(); alioqui permissiones_require = 0;
+			per (var i : argumenta_extensionis) si (i^.valor.primus[0] >= '0' && i^.valor.primus[0] <= '9') {
+				redirecta_portorum.adde(i^.valor.primus.ad_int32(), i^.valor.secundus);
+			}
+			argumentum = argumenta_extensionis["anathemare"];
+			si (argumentum != nullus) anathemare = argumentum^.ad_nint32(); alioqui anathemare = 0;
+			si (anathemare) {
+				synch_anathemarum = contextus.crea_semaphorum(1);
+				si (!synch_anathemarum) iace errores.memoria_nulla;
+				argumentum = argumenta_extensionis["tempus-anathemae"];
+				si (argumentum != nullus) {
+					var p = argumentum^.scinde(':');
+					nint h = p^.longitudo >= 1 ? p^[0].ad_nint32() : 0;
+					nint m = p^.longitudo >= 2 ? p^[1].ad_nint32() : 0;
+					nint s = p^.longitudo >= 3 ? p^[2].ad_nint32() : 0;
+					tempus_anathemae = (h * 60 + (m * 60 + s)) * 1000;
+				} alioqui tempus_anathemae = 24 * 60 * 60 * 1000;
+			} alioqui tempus_anathemae = 0;
+		}
+		functio nihil post_ini() iacit redefini {}
+		functio nihil siste() redefini {}
+	}
+	structura http_extensio_limarum hereditat http_extensio {
+		!.http.limae.extensio _extlim;
+		functio linea lege_argumentum(~linea nomen) iacit {
+			var aarg = argumenta_extensionis[nomen];
+			si (aarg != nullus) responde aarg^; alioqui responde "";
+		}
+		functio .http.limae.descriptio_formati lege_descriptionem_formati(~linea nomen) iacit {
+			var p = lege_argumentum(nomen).scinde('|');
+			.http.limae.descriptio_formati desc;
+			desc.mime = p^.longitudo > 0 ? p^[0] : "";
+			desc.codex = p^.longitudo > 1 ? p^[1] : "";
+			desc.onerare = p^.longitudo > 1 ? p^[2] == "1" : non;
+			responde desc;
+		}
+		functio nihil ini_http() iacit redefini {
+			.http.limae.descriptio_extensionis desc;
+			var subext = para_servum()^.para_extensiones(ego);
+			per (var i : subext^) {
+				proba {
+					var xcensoris = subext^[i] acsi (http_censor);
+					si (xcensoris^.cense_permissiones & modus_limae.legere) desc.censor_legendi = xcensoris;
+					si (xcensoris^.cense_permissiones & modus_limae.scribere) desc.censor_scribendi = xcensoris;
+				}
+				proba {
+					var xgenerator = subext^[i] acsi (http_generator_collectoriorum);
+					desc.generator_collectoriorum = xgenerator;
+				}
+			}
+			desc.collectorium = lege_argumentum("collectorium");
+			desc.permitte_collectoria = lege_argumentum("permitte-collectoria") == "1";
+			desc.permitte_scriptiones = lege_argumentum("permitte-scriptiones") == "1";
+			var postverbium = lege_argumentum("postverbium-collectoriorum");
+			si (postverbium.longitudo) {
+				desc.postverbium_collectoriorum = postverbium;
+				desc.redirege_collectoria = sic;
+			} alioqui desc.redirege_collectoria = non;
+			desc.praeverbium_auxilii = praeverbium;
+			si (argumenta_extensionis.habet("formatus-defalta")) desc.descriptio_formati_defalta = lege_descriptionem_formati("formatus-defalta");
+			desc.formati = crea(desc.formati.genus_objectum);
+			per (var i : argumenta_extensionis) {
+				var ~ v = i^.valor;
+				si (v.primus.fragmentum(0, 15) == "formatus-limae-") desc.formati^.adde(v.primus.fragmentum(15, -1), lege_descriptionem_formati(v.primus));
+			}
+			_extlim = crea(.http.limae.extensio, desc);
+			extensio_http = _extlim;
+		}
+	}
+}

@@ -5,7 +5,7 @@ auxilium attributum (meta.attributum_versio)			= "1.0.0.1";
 
 [[systema] nulla]
 
-importa libxservus;
+importa libxservus interne;
 importa potentia;
 importa repulsus;
 importa formati;
@@ -13,12 +13,24 @@ importa limae;
 importa lxx;
 
 spatium xservus {
+	genus sera {
+		!contextus.semaphorum _synch;
+		structor (@contextus.semaphorum s) { _synch.contine(s); _synch^.opperire(); }
+		destructor () { _synch^.aperi(); }
+	}
 	structura impl_usor hereditat usor {
+		!contextus.semaphorum synch;
 		linea vnomen;
 		linea vclavis;
 		collectiones.dictionarium[linea, nint] vpermissiones;
 
+		structor () iacit {
+			synch = contextus.crea_semaphorum(1);
+			si (!synch) iace errores.memoria_nulla;
+		}
 		structor (@formati.nodus_tabularii nu) iacit {
+			synch = contextus.crea_semaphorum(1);
+			si (!synch) iace errores.memoria_nulla;
 			vnomen = nu^["Nomen"] acsi (linea)^;
 			vclavis = nu^["Clavis"] acsi (linea)^;
 			var valores = nu^.valores;
@@ -27,16 +39,44 @@ spatium xservus {
 				vpermissiones.adde(valores[i].fragmentum(1, -1), valor);
 			}
 		}
-		linea nomen { adipisce iacit redefini { responde vnomen; } }
-		linea clavis { adipisce iacit redefini { responde vclavis; } }
-		functio nint permissiones(~linea dominatus) iacit redefini { var d = vpermissiones[dominatus]; responde d != nullus ? d^ : 0; }
+		linea nomen { adipisce iacit redefini { sera s(synch); responde vnomen; } }
+		linea clavis {
+			adipisce iacit redefini { sera s(synch); responde vclavis; }
+			loca iacit redefini { sera s(synch); vclavis = valor; }
+		}
+		ordo linea dominati { adipisce iacit redefini {
+			sera s(synch);
+			ordo linea r;
+			per (var p : vpermissiones) r.adde(p^.valor.primus);
+			responde r;
+		} }
+		functio nint permissiones(~linea dominatus) iacit redefini {
+			sera s(synch);
+			var d = vpermissiones[dominatus];
+			responde d != nullus ? d^ : 0;
+		}
+		functio nihil adde_permissionem(~linea dominatus, nint valor) iacit redefini {
+			si (valor) {
+				sera s(synch);
+				vpermissiones.rescribe(dominatus, valor);
+			} alioqui remove_permissionem(dominatus);
+		}
+		functio nihil remove_permissionem(~linea dominatus) iacit redefini {
+			sera s(synch);
+			vpermissiones.remove(dominatus);
+		}
 	}
 	structura impl_systema_usorum hereditat systema_usorum {
+		!contextus.semaphorum synch;
 		collectiones.dictionarium[linea, !impl_usor] u;
+		semita slu;
 
 		structor (~linea lu) iacit {
+			synch = contextus.crea_semaphorum(1);
+			si (!synch) iace errores.memoria_nulla;
 			si (!lu.longitudo) responde;
-			var tu = formati.tabularium.onera(semita(lu).crea_limam(modus_limae.legere, modus_creatoris.aperi_praesens));
+			slu = semita(lu);
+			var tu = formati.tabularium.onera(semita(slu).crea_limam(modus_limae.legere, modus_creatoris.aperi_praesens));
 			var subnodi = tu^.subnodi;
 			per (var i : subnodi) {
 				var nu = tu^.aperi_nodum(subnodi[i]);
@@ -44,8 +84,14 @@ spatium xservus {
 				u.adde(usor^.vnomen, usor);
 			}
 		}
-		ordo linea nomina { adipisce iacit redefini { ordo linea r; per (var i : u) r.adde(i^.valor.primus); responde r; } }
+		ordo linea nomina { adipisce iacit redefini {
+			sera s(synch);
+			ordo linea r;
+			per (var i : u) r.adde(i^.valor.primus);
+			responde r;
+		} }
 		functio !usor expone(~linea nomen) iacit redefini {
+			sera s(synch);
 			!usor r;
 			var uu = u[nomen];
 			si (uu == nullus) iace errores.ie_falsum, errores.ie_lima_nulla;
@@ -53,10 +99,60 @@ spatium xservus {
 			responde r;
 		}
 		functio !usor authoriza(~linea nomen, ~linea clavis) iacit redefini {
+			sera s(synch);
 			!usor r;
 			var uu = u[nomen];
-			si (uu != nullus && uu^^.vclavis == clavis) r.contine(uu^);
+			si (uu != nullus && uu^^.clavis == clavis) r.contine(uu^);
 			responde r;
+		}
+		functio nihil adde_usorem(~linea nomen, ~linea clavis) iacit redefini {
+			var uu = crea(impl_usor);
+			uu^.vnomen = nomen; uu^.vclavis = clavis;
+			sera s(synch);
+			si (!u.adde(nomen, uu)) iace errores.ie_falsum, errores.ie_lima_preexistat;
+		}
+		functio nihil remove_usorem(~linea nomen) iacit redefini { sera s(synch); u.remove(nomen); }
+		functio nihil renomina_usorem(~linea nomen, ~linea nomen_novum) iacit redefini {
+			sera s(synch);
+			!usor r;
+			var uu = u[nomen];
+			si (uu == nullus) iace errores.ie_falsum, errores.ie_lima_nulla;
+			si (!u.adde(nomen_novum, uu^)) iace errores.ie_falsum, errores.ie_lima_preexistat;
+			proba {
+				sera ss(uu^^.synch);
+				uu^^.vnomen = nomen_novum;
+			} cape (nintadl e, nintadl se) {
+				u.remove(nomen_novum);
+				iace e, se;
+			}
+			u.remove(nomen);
+		}
+		functio nihil salva() iacit redefini {
+			si (!slu.longitudo) iace errores.implantatio_nulla;
+			var tab = formati.tabularium.alloca();
+			{
+				sera s(synch);
+				nint num = 0;
+				per (var i : u) {
+					linea subnn(num, linea.radix_decima, 6);
+					tab^.crea_nodum(subnn);
+					var subn = tab^.aperi_nodum(subnn);
+					var ~ uu = i^.valor.secundus^;
+					sera ss(uu.synch);
+					subn^.crea_valorem("Nomen", formati.genus_valoris_tabularii.textum);
+					subn^.crea_valorem("Clavis", formati.genus_valoris_tabularii.textum);
+					subn^.scribe_valorem("Nomen", uu.vnomen);
+					subn^.scribe_valorem("Clavis", uu.vclavis);
+					per (var j : uu.vpermissiones) {
+						linea pn = "_" + j^.valor.primus;
+						subn^.crea_valorem(pn, formati.genus_valoris_tabularii.integer);
+						subn^.scribe_valorem(pn, int(j^.valor.secundus));
+					}
+					num++;
+				}
+			}
+			var fl = semita(slu).crea_limam(modus_limae.scribere_et_legere, modus_creatoris.crea_semper);
+			tab^.salva_in_scriptionem(fl, linea.codex.utf8);
 		}
 	}
 	structura impl_servus hereditat servus {
@@ -80,85 +176,84 @@ spatium xservus {
 			responde r;
 		}
 		functio !systema_usorum expone_classem() { !systema_usorum r; r.contine(su); responde r; }
-
-		structura supervisor hereditat extensio {
-			collectiones.dictionarium[linea, linea] _argumenta;
-			!communicatio.attentor _attentor;
-			!contextus.semaphorum _synch;
-			ordo !communicatio.canale _can;
-			structor () iacit { _synch = contextus.crea_semaphorum(1); si (!_synch) iace errores.memoria_nulla; }
-			@nihil genus_extensionis_radicalis { adipisce redefini { responde nullus; } }
-			@extensio extensio_radicalis { adipisce redefini { responde nullus; } }
-			!collectiones.dictionarium[linea, linea] argumenta { adipisce iacit redefini { responde crea(collectiones.dictionarium[linea, linea], _argumenta); } }
-			functio nihil ini(@extensio basis, ~collectiones.dictionarium[linea, linea] arg) iacit redefini {
-				_argumenta = arg;
-				var adl_nomen = _argumenta["nomen"];
-				linea nomen = adl_nomen != nullus ? linea(adl_nomen^) : "xservus";
-				_attentor = communicatio.crea_attentorem();
-				_attentor^.adnecte(communicatio.adloquium_localis(nomen));
-				proba communicatio.accipe_canale(_attentor, -1) { proba {
-					si (status_operationis.error) {
-						linea de, dse;
-						errores.descriptio(status_operationis.error, status_operationis.suberror, de, dse);
-						actuarius.scribe("ERROR ACCIPIENDI CANALIS: " + de + " (" + dse + ")");
-					} alioqui {
-						_synch^.opperire();
-						proba _can.adde(canale_novum); cape {
-							_synch^.aperi();
-							proba canale_novum^.clode(sic);
-							responde;
-						}
-						_synch^.aperi();
-						_procede(canale_novum);
-					}
-				} }; cape (nintadl e, nintadl se) {
-					proba _attentor^.clode();
-					iace e, se;
-				}
-			}
-			functio nihil post_ini() iacit redefini {}
-			functio nihil siste() redefini {
-				_synch^.opperire();
-				si (_attentor) proba _attentor^.clode(); _attentor.depura();
-				per (var i : _can) proba _can[i]^.clode(sic);
-				_can.depura();
-				_synch^.aperi();
-			}
-			functio nihil _procede(~!communicatio.canale canale) {
-				proba {
-					communicatio.admitte_data(canale, 1) {
-						proba {
-							status_operationis.modera();
-							si (data_recepta^.longitudo < 1) iace errores.habitus_falsus;
-							var data = crea(dordo_datorum);
-							data^.adde(nint8('1'));
-							si (data_recepta^[0] == '0') {
-								para_servum()^.siste();
-								canale^.mitte(data, nullus, nullus, nullus);
-							} alioqui si (data_recepta^[0] == '1') {
-								canale^.mitte(data, nullus, nullus, nullus);
-							}
-							_procede(canale);
-						} cape {
-							_synch^.opperire();
-							per (var i : _can) si (_can[i].valor() == canale.valor()) { _can.remove(i); exi; }
-							_synch^.aperi();
-							proba canale^.clode(sic);
-						}
-					};
-				} cape {
+	}
+	structura supervisor hereditat extensio {
+		collectiones.dictionarium[linea, linea] _argumenta;
+		!communicatio.attentor _attentor;
+		!contextus.semaphorum _synch;
+		ordo !communicatio.canale _can;
+		structor () iacit { _synch = contextus.crea_semaphorum(1); si (!_synch) iace errores.memoria_nulla; }
+		@nihil genus_extensionis_radicalis { adipisce redefini { responde nullus; } }
+		@extensio extensio_radicalis { adipisce redefini { responde nullus; } }
+		!collectiones.dictionarium[linea, linea] argumenta { adipisce iacit redefini { responde crea(collectiones.dictionarium[linea, linea], _argumenta); } }
+		functio nihil ini(@extensio basis, ~collectiones.dictionarium[linea, linea] arg) iacit redefini {
+			_argumenta = arg;
+			var adl_nomen = _argumenta["nomen"];
+			linea nomen = adl_nomen != nullus ? linea(adl_nomen^) : "xservus";
+			_attentor = communicatio.crea_attentorem();
+			_attentor^.adnecte(communicatio.adloquium_localis(nomen));
+			proba communicatio.accipe_canale(_attentor, -1) { proba {
+				si (status_operationis.error) {
+					linea de, dse;
+					errores.descriptio(status_operationis.error, status_operationis.suberror, de, dse);
+					actuarius.scribe("(SV) ERROR ACCIPIENDI CANALIS: " + de + " (" + dse + ")");
+				} alioqui {
 					_synch^.opperire();
-					per (var i : _can) si (_can[i].valor() == canale.valor()) { _can.remove(i); exi; }
+					proba _can.adde(canale_novum); cape {
+						_synch^.aperi();
+						proba canale_novum^.clode(sic);
+						responde;
+					}
 					_synch^.aperi();
-					proba canale^.clode(sic);
+					_procede(canale_novum);
 				}
+			} }; cape (nintadl e, nintadl se) {
+				proba _attentor^.clode();
+				iace e, se;
+			}
+		}
+		functio nihil post_ini() iacit redefini {}
+		functio nihil siste() redefini {
+			_synch^.opperire();
+			si (_attentor) proba _attentor^.clode(); _attentor.depura();
+			per (var i : _can) proba _can[i]^.clode(sic);
+			_can.depura();
+			_synch^.aperi();
+		}
+		functio nihil _procede(~!communicatio.canale canale) {
+			proba {
+				communicatio.admitte_data(canale, 1) {
+					proba {
+						status_operationis.modera();
+						si (data_recepta^.longitudo < 1) iace errores.habitus_falsus;
+						var data = crea(dordo_datorum);
+						data^.adde(nint8('1'));
+						si (data_recepta^[0] == '0') {
+							para_servum()^.siste();
+							canale^.mitte(data, nullus, nullus, nullus);
+						} alioqui si (data_recepta^[0] == '1') {
+							canale^.mitte(data, nullus, nullus, nullus);
+						}
+						_procede(canale);
+					} cape {
+						_synch^.opperire();
+						per (var i : _can) si (_can[i].valor() == canale.valor()) { _can.remove(i); exi; }
+						_synch^.aperi();
+						proba canale^.clode(sic);
+					}
+				};
+			} cape {
+				_synch^.opperire();
+				per (var i : _can) si (_can[i].valor() == canale.valor()) { _can.remove(i); exi; }
+				_synch^.aperi();
+				proba canale^.clode(sic);
 			}
 		}
 	}
 
 	functio !formati.tabularium onera_configurationem() iacit {
 		var a = para_argumenta();
-		var b = a^.longitudo > 1 ? semita(a^[1]) : semita("xservus.ini");
+		var b = a^.longitudo > 1 ? semita(a^[1]) : semita(semita.modulus_primus().parens, "xservus.ini");
 		var c = formati.tabularium.onera(b.crea_limam(modus_limae.legere, modus_creatoris.aperi_praesens));
 		b.parens.loca_currentem();
 		responde c;
@@ -199,7 +294,7 @@ spatium xservus {
 	functio nihil crea_extensiones(~impl_servus srv, @formati.tabularium configuratio) iacit {
 		var nomen_servi = configuratio^["Nomen"] acsi (linea)^;
 		si (!nomen_servi.longitudo) nomen_servi = "xservus";
-		var svext = crea_extensionem(srv, "xservus.impl_servus.supervisor");
+		var svext = crea_extensionem(srv, "xservus.supervisor");
 		collectiones.dictionarium[@extensio, (!formati.nodus_tabularii, int, int)] xiniti;
 		!formati.nodus_tabularii svext_arg;
 		svext_arg.contine(formati.tabularium.alloca().valor());

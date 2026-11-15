@@ -26,6 +26,15 @@ spatium remota {
 			functio nihil recipe_systemam() iacit virtualis pura;
 			functio nihil siste_servum() iacit virtualis pura;
 			functio nihil recipe_servum() iacit virtualis pura;
+			ordo linea usores { adipisce iacit virtualis pura; }
+			functio nihil adde_usorem(~linea nomen, ~linea clavis) iacit virtualis pura;
+			functio nihil remove_usorem(~linea nomen) iacit virtualis pura;
+			functio nihil renomina_usorem(~linea nomen, ~linea nomen_novum) iacit virtualis pura;
+			functio nihil salva_usores() iacit virtualis pura;
+			functio linea lege_clavem_usoris(~linea nomen) iacit virtualis pura;
+			functio nihil rescribe_clavem_usoris(~linea nomen, ~linea clavis) iacit virtualis pura;
+			functio ordo (linea, nint) lege_permissiones_usoris(~linea nomen) iacit virtualis pura;
+			functio nihil rescribe_permissionem_usoris(~linea nomen, ~linea dominatus, nint valor) iacit virtualis pura;
 		}
 		[[ifr]] genus authorizator hereditat remota.objectum {
 			functio !servus authoriza(~linea usor, ~linea clavis) iacit virtualis pura;

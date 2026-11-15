@@ -118,6 +118,50 @@ spatium xservus {
 			};
 			para_servum()^.siste();
 		}
+		ordo linea usores { adipisce iacit redefini {
+			si (!(_permissiones & modus_limae.exequi)) iace errores.ie_falsum, errores.ie_permissio_nulla;
+			responde para_servum() acsi (systema_usorum)^.nomina;
+		} }
+		functio nihil adde_usorem(~linea nomen, ~linea clavis) iacit redefini {
+			si (!(_permissiones & modus_limae.exequi)) iace errores.ie_falsum, errores.ie_permissio_nulla;
+			para_servum() acsi (systema_usorum)^.adde_usorem(nomen, clavis);
+		}
+		functio nihil remove_usorem(~linea nomen) iacit redefini {
+			si (!(_permissiones & modus_limae.exequi)) iace errores.ie_falsum, errores.ie_permissio_nulla;
+			para_servum() acsi (systema_usorum)^.remove_usorem(nomen);
+		}
+		functio nihil renomina_usorem(~linea nomen, ~linea nomen_novum) iacit redefini {
+			si (!(_permissiones & modus_limae.exequi)) iace errores.ie_falsum, errores.ie_permissio_nulla;
+			para_servum() acsi (systema_usorum)^.renomina_usorem(nomen, nomen_novum);
+		}
+		functio nihil salva_usores() iacit redefini {
+			si (!(_permissiones & modus_limae.exequi)) iace errores.ie_falsum, errores.ie_permissio_nulla;
+			si (!(_permissiones & modus_limae.scribere)) iace errores.ie_falsum, errores.ie_permissio_nulla;
+			para_servum() acsi (systema_usorum)^.salva();
+		}
+		functio linea lege_clavem_usoris(~linea nomen) iacit redefini {
+			si (!(_permissiones & modus_limae.exequi)) iace errores.ie_falsum, errores.ie_permissio_nulla;
+			var u = para_servum() acsi (systema_usorum)^.expone(nomen);
+			responde u^.clavis;
+		}
+		functio nihil rescribe_clavem_usoris(~linea nomen, ~linea clavis) iacit redefini {
+			si (!(_permissiones & modus_limae.exequi)) iace errores.ie_falsum, errores.ie_permissio_nulla;
+			var u = para_servum() acsi (systema_usorum)^.expone(nomen);
+			u^.clavis = clavis;
+		}
+		functio ordo (linea, nint) lege_permissiones_usoris(~linea nomen) iacit redefini {
+			si (!(_permissiones & modus_limae.exequi)) iace errores.ie_falsum, errores.ie_permissio_nulla;
+			var u = para_servum() acsi (systema_usorum)^.expone(nomen);
+			ordo (linea, nint) r;
+			var dn = u^.dominati;
+			per (var i : dn) r.adde((dn[i], u^.permissiones(dn[i])));
+			responde r;
+		}
+		functio nihil rescribe_permissionem_usoris(~linea nomen, ~linea dominatus, nint valor) iacit redefini {
+			si (!(_permissiones & modus_limae.exequi)) iace errores.ie_falsum, errores.ie_permissio_nulla;
+			var u = para_servum() acsi (systema_usorum)^.expone(nomen);
+			u^.adde_permissionem(dominatus, valor);
+		}
 	}
 	[(remota.attributa.exportatum) "remota.xservus.authorizator"]
 	structura _ifr_rs_authorizator hereditat remota.xservus.authorizator {
@@ -134,7 +178,7 @@ spatium xservus {
 			}
 			si (!perm) iace errores.ie_falsum, errores.ie_permissio_nulla;
 			var srvs = crea(_ifr_rs_servus);
-			srvs^._permissiones = perm;
+			srvs^._permissiones = perm & modus_limae.ultimus;
 			responde srvs acsi (remota.xservus.servus);
 		}
 	}

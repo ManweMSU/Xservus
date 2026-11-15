@@ -1,0 +1,1039 @@
+﻿auxilium attributum (meta.attributum_nomen_moduli)		= "X Servus - Rector";
+auxilium attributum (meta.attributum_iura_exempli)		= "© Engine Software. 2026";
+auxilium attributum (meta.attributum_creator_moduli)	= "Engine Software";
+auxilium attributum (meta.attributum_versio)			= "1.0.0.1";
+auxilium lingua "ru";
+auxilium lingua "en";
+
+importa lxx;
+importa ifr_sl interne;
+importa ifr_sl_liber interne;
+importa ifr_rs interne;
+
+constatus ifr_portus_defaltus = nint(10666);
+var ~consolatorium con = consolatorium.currens()^;
+spatium lineae {
+	constatus adloquium = "Adloquium: "
+		{ "ru", "Адрес сервера: " }
+		{ "en", "Server address: " };
+	constatus error_communalis = "ERROR COMMUNALIS"
+		{ "ru", "ОБЩАЯ ОШИБКА ИСПОЛНЕНИЯ" }
+		{ "en", "COMMON EXECUTION ERROR" };
+	constatus error_imperati = "Error imperati"
+		{ "ru", "Ошибка исполнения команды" }
+		{ "en", "Command execution error" };
+	constatus servus_closus = "Servus closus est."
+		{ "ru", "Сервер был закрыт." }
+		{ "en", "The server was closed." };
+	constatus servus_sl_nulla = "Servus systemae limarum nullus."
+		{ "ru", "Служба удалённой файловой системы не поддерживается." }
+		{ "en", "The remote file system service is not available." };
+	constatus servus_rs_nulla = "Servus rectionis ab servo nullus."
+		{ "ru", "Служба управления сервером не поддерживается." }
+		{ "en", "The server control service is not available." };
+	constatus permissiones_sl = "Permissiones per locatione '%0' : %1."
+		{ "ru", "Права на расположение '%0' : %1." }
+		{ "en", "Permissions for location '%0' : %1." };
+	constatus permissiones_rs = "Permissiones per servo : %0."
+		{ "ru", "Права на сервер : %0." }
+		{ "en", "Permissions for server : %0." };
+	constatus status_energiae_praecipiens = "Accumulator praecipiens est, %0%%."
+		{ "ru", "Аккумулятор заряжается, заряд %0%%." }
+		{ "en", "The battery is charging, charge %0%%." };
+	constatus status_energiae_depraecipiens = "Accumulator depraecipiens est, %0%%."
+		{ "ru", "Аккумулятор разряжается, заряд %0%%." }
+		{ "en", "The battery is discharging, charge %0%%." };
+	constatus status_energiae_accumulator_nullus = "Energia ex rete."
+		{ "ru", "Сетевой источник питания." }
+		{ "en", "The line power source is used." };
+}
+
+genus imperatum hereditat objectum {
+	structor () {}
+	functio nihil exeque(~dordo_linearum imperatum) iacit virtualis pura;
+	functio ordo linea ende(~dordo_linearum imperatum, logicum argumentum_novum) iacit virtualis pura;
+}
+genus collectorium hereditat objectum {
+	!collectiones.dictionarium[linea, !remota.systema_limarum.locatio] _radices;
+	ordo !collectorium _parentes;
+	!remota.systema_limarum.locatio _ego;
+	linea _semita;
+
+	functio nihil _decompone(~linea semita, ~linea nomen, ~!collectorium col) iacit {
+		var del = semita.reperi_ultimum("/");
+		si (del >= 0) {
+			col = aperi_locationem(semita.fragmentum(0, del + 1));
+			nomen = semita.fragmentum(del + 1, -1);
+		} alioqui {
+			col.contine(ego);
+			nomen = semita;
+		}
+	}
+	structor (~ordo !remota.systema_limarum.locatio rdx) iacit {
+		_radices = crea(_radices.genus_objectum);
+		per (var i : rdx) _radices^.adde(rdx[i]^.nomen, rdx[i]);
+		_semita = "/";
+	}
+	structor (~!collectorium parens, ~linea filius) iacit {
+		funda _radices(parens^._radices);
+		funda _parentes(parens^._parentes);
+		_parentes.adde(parens);
+		si (parens^._ego) {
+			_ego = parens^._ego^.aperi_locationem(filius, parens^._ego^.modus);
+			_semita = parens^._semita + "/" + filius;
+		} alioqui si (parens^._radices) {
+			var sub = parens^._radices^[filius];
+			si (sub == nullus) iace errores.ie_falsum, errores.ie_semita_nulla;
+			_ego = sub^;
+			_semita = "/" + filius;
+		} alioqui iace errores.habitus_falsus;
+	}
+	linea semita { adipisce iacit { responde _semita; } }
+	nint modus { adipisce iacit { responde _ego ? _ego^.modus : 7; } }
+	!collectorium parens { adipisce iacit { si (_parentes.longitudo) responde _parentes.ultimus(); iace errores.ie_falsum, errores.ie_semita_nulla; } }
+	(nint64, nint64, nint64) quota { adipisce iacit { si (_ego) responde _ego^.quota; iace errores.implantatio_nulla; } }
+	ordo (linea, nint) filii { adipisce iacit {
+		si (_ego) responde _ego^.filii;
+		ordo (linea, nint) r;
+		si (_radices) per (var v : _radices^) r << (v^.valor.primus, remota.systema_limarum.genus_objecti.collectorium);
+		responde r;
+	} }
+	functio !collectorium aperi_locationem(~linea nomen) iacit {
+		!collectorium currens;
+		si (nomen[0] == '/' && _parentes.longitudo) currens = _parentes[0];
+		alioqui currens.contine(ego);
+		var n = nomen.scinde('/');
+		per (var i : n^) {
+			var sn = n^[i];
+			si (!sn.longitudo || sn == ".") dura;
+			si (sn == "..") currens = currens^.parens;
+			alioqui currens = crea(collectorium, currens, sn);
+		}
+		responde currens;
+	}
+	functio !remota.systema_limarum.lima aperi_limam(~linea nomen, nint modus) iacit {
+		var lim = nomen.reperi_ultimum("/");
+		si (lim >= 0) {
+			var col = aperi_locationem(nomen.fragmentum(0, lim + 1));
+			responde col^.aperi_limam(nomen.fragmentum(lim + 1, -1), modus);
+		} alioqui si (_ego) {
+			responde _ego^.aperi_limam(nomen, modus);
+		} alioqui iace errores.ie_falsum, errores.ie_lima_nulla;
+	}
+	functio nihil crea_collectorium(~linea nomen) iacit {
+		!collectorium col; linea nom;
+		_decompone(nomen, nom, col);
+		si (!col^._ego) iace errores.implantatio_nulla;
+		col^._ego^.crea_filium(nom, remota.systema_limarum.genus_objecti.collectorium);
+	}
+	functio nihil crea_limam(~linea nomen) iacit {
+		!collectorium col; linea nom;
+		_decompone(nomen, nom, col);
+		si (!col^._ego) iace errores.implantatio_nulla;
+		col^._ego^.crea_filium(nom, remota.systema_limarum.genus_objecti.lima);
+	}
+	functio nihil move_filium(~linea nomen, ~linea nomen_novum) iacit {
+		!collectorium col_de, col_ad; linea nom_de, nom_ad;
+		_decompone(nomen, nom_de, col_de);
+		_decompone(nomen_novum, nom_ad, col_ad);
+		si (!col_de^._ego || !col_ad^._ego) iace errores.implantatio_nulla;
+		col_de^._ego^.move_filium(nom_de, nom_ad, col_ad^._ego);
+	}
+	functio nihil remove_filium(~linea nomen) iacit {
+		!collectorium col; linea nom;
+		_decompone(nomen, nom, col);
+		si (!col^._ego) iace errores.implantatio_nulla;
+		col^._ego^.remove_filium(nom);
+	}
+}
+structura contextus_rectoris {
+	!contextus.cauda_simplex cauda;
+	!contextus.filum filum;
+	!contextus.signale finis;
+	!remota.servus servus;
+	!remota.xservus.servus rs;
+	ordo !remota.systema_limarum.locatio sl;
+	collectiones.dictionarium[linea, !imperatum] imperata;
+	logicum procede;
+	linea quaesitum;
+	!collectorium collectorium_currens;
+
+	// TODO: ADDE HISTORIAM / CONTEXTUS INPONENDI
+
+}
+var contextus_rectoris ctx;
+
+spatium enumeratores {
+	structura enumerator_limarum_remotarum {
+		ordo (!collectorium, linea, linea, nint) _cauda; // locatio, nomen locale, subsemita, genus
+		structor () {}
+		structor (~!collectorium currens, ~linea semita) iacit {
+			!collectorium col; linea nom;
+			currens^._decompone(semita, nom, col);
+			nint go = remota.systema_limarum.genus_objecti.ignotus;
+			var filii = col^.filii;
+			per (var i : filii) si (filii[i].primus == nom) { go = filii[i].secundus; exi; }
+			_cauda.adde((col, nom, linea(), go));
+		}
+		functio ~enumerator_limarum_remotarum operator ++ () iacit {
+			si (_cauda.longitudo) {
+				si (_cauda[0].quartus == remota.systema_limarum.genus_objecti.collectorium) {
+					var col = _cauda[0].primus^.aperi_locationem(_cauda[0].secundus);
+					var filii = col^.filii;
+					per (var i : filii) _cauda << (col, filii[i].primus, _cauda[0].tertius + "/" + filii[i].primus, filii[i].secundus);
+				}
+				_cauda.remove_primum();
+			}
+			responde ego^;
+		}
+		classis functio logicum operator != (~enumerator_limarum_remotarum a, ~enumerator_limarum_remotarum b) { responde a._cauda.longitudo || b._cauda.longitudo; }
+		(!collectorium, linea, linea, nint) valor { adipisce iacit { si (!_cauda.longitudo) iace errores.habitus_falsus; responde _cauda.primus(); } }
+	}
+	structura enumerator_limarum_localium {
+		ordo (semita, linea, nint) _cauda; // semita, subsemita, genus
+		structor () {}
+		structor (~semita sem) iacit {
+			si (sem.collectorium_est) _cauda.adde((sem, linea(), remota.systema_limarum.genus_objecti.collectorium));
+			alioqui si (sem.lima_est) _cauda.adde((sem, linea(), remota.systema_limarum.genus_objecti.lima));
+		}
+		functio ~enumerator_limarum_localium operator ++ () iacit {
+			si (_cauda.longitudo) {
+				si (_cauda[0].tertius == remota.systema_limarum.genus_objecti.collectorium) {
+					var collectoria = _cauda[0].primus.collectoria();
+					var limae = _cauda[0].primus.limae();
+					per (var i : collectoria^) {
+						semita s(collectoria^[i]);
+						_cauda.adde((s, _cauda[0].secundus + "/" + s.nomen, remota.systema_limarum.genus_objecti.collectorium));
+					}
+					per (var i : limae^) {
+						semita s(limae^[i]);
+						_cauda.adde((s, _cauda[0].secundus + "/" + s.nomen, remota.systema_limarum.genus_objecti.lima));
+					}
+				}
+				_cauda.remove_primum();
+			}
+			responde ego^;
+		}
+		classis functio logicum operator != (~enumerator_limarum_localium a, ~enumerator_limarum_localium b) { responde a._cauda.longitudo || b._cauda.longitudo; }
+		(semita, linea, nint) valor { adipisce iacit { si (!_cauda.longitudo) iace errores.habitus_falsus; responde _cauda.primus(); } }
+	}
+	genus dorsum_remotum {
+		!collectorium _currens; linea _semita;
+		structor (~!collectorium currens, ~linea semita) iacit { funda _currens(currens); funda _semita(semita); }
+		functio enumerator_limarum_remotarum initus() iacit { responde enumerator_limarum_remotarum(_currens, _semita); }
+		functio enumerator_limarum_remotarum post_finis() iacit { responde enumerator_limarum_remotarum(); }
+	}
+	genus dorsum_locale {
+		semita _semita;
+		structor (~semita sem) iacit { funda _semita(sem); }
+		functio enumerator_limarum_localium initus() iacit { responde enumerator_limarum_localium(_semita); }
+		functio enumerator_limarum_localium post_finis() iacit { responde enumerator_limarum_localium(); }
+	}
+}
+spatium imperata {
+	functio logicum _lege_argumetum(~linea in, ~int pos, int long, ~linea arg) iacit
+	{
+		dum (pos < long && (in[pos] == ' ' || in[pos] == '\t')) pos++;
+		si (pos >= long) responde non;
+		si (in[pos] == '\'') {
+			ordo char acc;
+			pos++;
+			dum (pos < long) {
+				si (in[pos] == '\'') {
+					pos++;
+					si (in[pos] == '\'') {
+						acc.adde(in[pos]);
+						pos++;
+					} alioqui exi;
+				} alioqui {
+					acc.adde(in[pos]);
+					pos++;
+				}
+			}
+			arg = linea(acc.data, acc.longitudo, linea.codex.utf32);
+		} alioqui {
+			int i = pos;
+			dum (pos < long && in[pos] != ' ' && in[pos] != '\t') pos++;
+			arg = in.fragmentum(i, pos - i);
+		}
+		responde sic;
+	}
+	functio logicum decompone(~linea in, ~dordo_linearum imperatum)
+	{
+		proba {
+			int pos = 0;
+			int long = in.longitudo;
+			imperatum.depura();
+			logicum lectum = sic;
+			dum (lectum) {
+				linea arg;
+				lectum = _lege_argumetum(in, pos, long, arg);
+				si (lectum) imperatum.adde(arg);
+			}
+			responde imperatum.longitudo > 0;
+		} cape responde non;
+	}
+	functio ordo linea ende(~dordo_linearum imperatum, logicum argumentum_novum) iacit {
+
+		// TODO: IMPLEMENT
+		iace errores.implantatio_nulla;
+
+	}
+	spatium implantationes {
+		["imperatum" "authoriza"]
+		structura authoriza hereditat imperatum {
+			functio nihil exeque(~dordo_linearum imperatum) iacit redefini {
+				linea nomen = imperatum.longitudo > 1 ? imperatum[1] : "anonymous";
+				linea clavis = imperatum.longitudo > 2 ? imperatum[2] : "";
+				!remota.systema_limarum.authorizator sl_auth;
+				!remota.xservus.authorizator rs_auth;
+				proba sl_auth = remota.crea_exemplar(ctx.servus, remota.systema_limarum.authorizator) acsi (remota.systema_limarum.authorizator);
+				proba rs_auth = remota.crea_exemplar(ctx.servus, remota.xservus.authorizator) acsi (remota.xservus.authorizator);
+				ctx.sl.depura();
+				ctx.rs.depura();
+				ctx.collectorium_currens.depura();
+				ctx.quaesitum = "";
+				si (sl_auth) {
+					ctx.sl = sl_auth^.authoriza(nomen, clavis);
+					si (ctx.sl.longitudo > 0) {
+						ctx.collectorium_currens = crea(collectorium, ctx.sl);
+						ctx.quaesitum = ctx.collectorium_currens^.semita;
+					}
+				} alioqui {
+					con.color_primus = consolatorium.color.flavus;
+					con.scribe_lineam(lineae.servus_sl_nulla);
+					con.color_primus = consolatorium.color.defalta;
+				}
+				si (rs_auth) {
+					ctx.rs = rs_auth^.authoriza(nomen, clavis);
+				} alioqui {
+					con.color_primus = consolatorium.color.flavus;
+					con.scribe_lineam(lineae.servus_rs_nulla);
+					con.color_primus = consolatorium.color.defalta;
+				}
+			}
+			functio ordo linea ende(~dordo_linearum imperatum, logicum argumentum_novum) iacit redefini {
+
+				// TODO: IMPLEMENT
+				iace errores.implantatio_nulla;
+
+			}
+		}
+		["imperatum" "exi"]
+		structura exire hereditat imperatum {
+			functio nihil exeque(~dordo_linearum imperatum) iacit redefini { ctx.procede = non; }
+			functio ordo linea ende(~dordo_linearum imperatum, logicum argumentum_novum) iacit redefini {
+
+				// TODO: IMPLEMENT
+				iace errores.implantatio_nulla;
+
+			}
+		}
+		["imperatum" "depura"]
+		structura depura hereditat imperatum {
+			functio nihil exeque(~dordo_linearum imperatum) iacit redefini { con.depura_cunctum(); }
+			functio ordo linea ende(~dordo_linearum imperatum, logicum argumentum_novum) iacit redefini {
+
+				// TODO: IMPLEMENT
+				iace errores.implantatio_nulla;
+
+			}
+		}
+		["imperatum" "permissiones"]
+		structura permissiones hereditat imperatum {
+			functio linea _permissiones(nint valor) iacit {
+				linea r;
+				si (valor & modus_limae.legere) r += "R"; alioqui r += "-";
+				si (valor & modus_limae.scribere) r += "W"; alioqui r += "-";
+				si (valor & modus_limae.exequi) r += "X"; alioqui r += "-";
+				responde r;
+			}
+			functio nihil exeque(~dordo_linearum imperatum) iacit redefini {
+				per (var i : ctx.sl) {
+					con.scribe_lineam(linea.forma(lineae.permissiones_sl, ctx.sl[i]^.nomen, _permissiones(ctx.sl[i]^.modus)));
+				}
+				si (ctx.rs) {
+					con.scribe_lineam(linea.forma(lineae.permissiones_rs, _permissiones(ctx.rs^.permissiones)));
+				}
+			}
+			functio ordo linea ende(~dordo_linearum imperatum, logicum argumentum_novum) iacit redefini {
+
+				// TODO: IMPLEMENT
+				iace errores.implantatio_nulla;
+
+			}
+		}
+		["imperatum" "siste"]
+		structura siste hereditat imperatum {
+			functio nihil exeque(~dordo_linearum imperatum) iacit redefini {
+				si (!ctx.rs) iace errores.habitus_falsus;
+				var machinam = imperatum.longitudo > 1 && imperatum[1] == "machinam";
+				si (machinam) ctx.rs^.siste_systemam(); alioqui ctx.rs^.siste_servum();
+				ctx.procede = non;
+			}
+			functio ordo linea ende(~dordo_linearum imperatum, logicum argumentum_novum) iacit redefini {
+
+				// TODO: IMPLEMENT
+				iace errores.implantatio_nulla;
+
+			}
+		}
+		["imperatum" "recipe"]
+		structura recipe hereditat imperatum {
+			functio nihil exeque(~dordo_linearum imperatum) iacit redefini {
+				si (!ctx.rs) iace errores.habitus_falsus;
+				var machinam = imperatum.longitudo > 1 && imperatum[1] == "machinam";
+				si (machinam) ctx.rs^.recipe_systemam(); alioqui ctx.rs^.recipe_servum();
+				ctx.procede = non;
+			}
+			functio ordo linea ende(~dordo_linearum imperatum, logicum argumentum_novum) iacit redefini {
+
+				// TODO: IMPLEMENT
+				iace errores.implantatio_nulla;
+
+			}
+		}
+		["imperatum" "status"]
+		structura status hereditat imperatum {
+			functio nihil scribe_extensiones(~remota.xservus.status_servi ss, int parens, ~linea praev) iacit {
+				per (var i : ss.extensiones) {
+					var ~ e = ss.extensiones[i];
+					si (e.numerus_parentis == parens) {
+						con.color_primus = consolatorium.color.purpureus;
+						con.scribe(praev + e.nomen_classis);
+						con.color_primus = consolatorium.color.griseus_tenebrosus;
+						con.scribe_lineam(":");
+						con.color_primus = consolatorium.color.defalta;
+						per (var j : e.argumenta) {
+							con.color_primus = consolatorium.color.lazulinus;
+							con.scribe(praev + "  " + e.argumenta[j].primus);
+							con.color_primus = consolatorium.color.griseus_tenebrosus;
+							con.scribe(" = ");
+							con.color_primus = consolatorium.color.viridis;
+							con.scribe_lineam(e.argumenta[j].secundus);
+							con.color_primus = consolatorium.color.defalta;
+						}
+						scribe_extensiones(ss, i, praev + "  ");
+					}
+				}
+			}
+			functio nihil exeque(~dordo_linearum imperatum) iacit redefini
+			{
+				si (!ctx.rs) iace errores.habitus_falsus;
+				var status = ctx.rs^.status;
+				si (status.potentia > 0) {
+					con.color_primus = consolatorium.color.viridis;
+					con.scribe_lineam(linea.forma(lineae.status_energiae_praecipiens, int(status.valor_praecipiendi)));
+					con.color_primus = consolatorium.color.defalta;
+				} alioqui si (status.potentia < 0) {
+					con.color_primus = consolatorium.color.flavus;
+					con.scribe_lineam(linea.forma(lineae.status_energiae_depraecipiens, int(status.valor_praecipiendi)));
+					con.color_primus = consolatorium.color.defalta;
+				} alioqui con.scribe_lineam(lineae.status_energiae_accumulator_nullus);
+				scribe_extensiones(status, -1, "");
+			}
+			functio ordo linea ende(~dordo_linearum imperatum, logicum argumentum_novum) iacit redefini {
+
+				// TODO: IMPLEMENT
+				iace errores.implantatio_nulla;
+
+			}
+		}
+		["imperatum" "usores"]
+		structura usores hereditat imperatum {
+			functio nihil exeque(~dordo_linearum imperatum) iacit redefini
+			{
+				si (!ctx.rs) iace errores.habitus_falsus;
+				si (imperatum.longitudo > 1 && imperatum[1] == "salva") ctx.rs^.salva_usores(); alioqui {
+					var u = ctx.rs^.usores;
+					per (var i : u) con.scribe_lineam(u[i]);
+				}
+			}
+			functio ordo linea ende(~dordo_linearum imperatum, logicum argumentum_novum) iacit redefini {
+
+				// TODO: IMPLEMENT
+				iace errores.implantatio_nulla;
+
+			}
+		}
+		["imperatum" "usor"]
+		structura usor hereditat imperatum {
+			functio nihil exeque(~dordo_linearum imperatum) iacit redefini
+			{
+				si (!ctx.rs) iace errores.habitus_falsus;
+				si (imperatum.longitudo <= 2) iace errores.argumentum_falsum;
+				var ~ verbum = imperatum[1];
+				var ~ nomen = imperatum[2];
+				si (verbum == "adde") {
+					si (imperatum.longitudo <= 3) iace errores.argumentum_falsum;
+					ctx.rs^.adde_usorem(nomen, imperatum[3]);
+				} alioqui si (verbum == "remove") {
+					ctx.rs^.remove_usorem(nomen);
+				} alioqui si (verbum == "renomina") {
+					si (imperatum.longitudo <= 3) iace errores.argumentum_falsum;
+					ctx.rs^.renomina_usorem(nomen, imperatum[3]);
+				} alioqui si (verbum == "clavis") {
+					si (imperatum.longitudo <= 3) con.scribe_lineam(ctx.rs^.lege_clavem_usoris(nomen));
+					alioqui ctx.rs^.rescribe_clavem_usoris(nomen, imperatum[3]);
+				} alioqui si (verbum == "permissio") {
+					si (imperatum.longitudo <= 4) {
+						var p = ctx.rs^.lege_permissiones_usoris(nomen);
+						per (var i : p) con.scribe_lineam(p[i].primus + ": " + linea(p[i].secundus, linea.radix_sextadecima, 8));
+					} alioqui ctx.rs^.rescribe_permissionem_usoris(nomen, imperatum[3], imperatum[4].ad_nint32(linea.radix_sextadecima));
+				}
+			}
+			functio ordo linea ende(~dordo_linearum imperatum, logicum argumentum_novum) iacit redefini {
+
+				// TODO: IMPLEMENT
+				iace errores.implantatio_nulla;
+
+			}
+		}
+		["imperatum" "cd"]
+		structura cd hereditat imperatum {
+			functio nihil exeque(~dordo_linearum imperatum) iacit redefini
+			{
+				si (!ctx.collectorium_currens) iace errores.habitus_falsus;
+				si (imperatum.longitudo <= 1) iace errores.argumentum_falsum;
+				var cn = ctx.collectorium_currens^.aperi_locationem(imperatum[1]);
+				si (cn) {
+					ctx.collectorium_currens = cn;
+					ctx.quaesitum = ctx.collectorium_currens^.semita;
+				}
+			}
+			functio ordo linea ende(~dordo_linearum imperatum, logicum argumentum_novum) iacit redefini {
+
+				// TODO: IMPLEMENT
+				iace errores.implantatio_nulla;
+
+			}
+		}
+		["imperatum" "pwd"]
+		structura pwd hereditat imperatum {
+			functio nihil exeque(~dordo_linearum imperatum) iacit redefini
+			{
+				si (!ctx.collectorium_currens) iace errores.habitus_falsus;
+				con.scribe_lineam(ctx.collectorium_currens^.semita);
+			}
+			functio ordo linea ende(~dordo_linearum imperatum, logicum argumentum_novum) iacit redefini {
+
+				// TODO: IMPLEMENT
+				iace errores.implantatio_nulla;
+
+			}
+		}
+		["imperatum" "ls"]
+		structura ls hereditat imperatum {
+			classis functio linea _lnmd(nint modus) iacit {
+				linea r;
+				si (modus & modus_limae.legere) r += "r"; alioqui r += "-";
+				si (modus & modus_limae.scribere) r += "w"; alioqui r += "-";
+				si (modus & modus_limae.exequi) r += "x"; alioqui r += "-";
+				responde r;
+			}
+			classis functio nihil _scribe_tabulationem(~ordo linea tab, ~ordo consolatorium.color colores, nint ncol) iacit {
+				si (tab.longitudo != colores.longitudo) iace errores.argumentum_falsum;
+				ordo nint clat;
+				nint nlin = tab.longitudo / ncol;
+				per (var c : [0, ncol - 1]) {
+					nint mx = 0;
+					per (var i : [0, nlin - 1]) {
+						var long = tab[c + i * ncol].longitudo;
+						si (long > mx) mx = long;
+					}
+					clat << mx;
+				}
+				per (var j : [0, nlin - 1]) {
+					per (var i : [0, ncol - 1]) {
+						nint k = i + j * ncol;
+						con.color_primus = colores[k];
+						si (i == 1) con.scribe(linea(' ', clat[i] - tab[k].longitudo));
+						con.scribe(tab[k]);
+						si (i != 1) con.scribe(linea(' ', clat[i] - tab[k].longitudo));
+						si (i == ncol - 1) con.scribe_lineam(); alioqui con.scribe(" ");
+					}
+				}
+				con.color_primus = consolatorium.color.defalta;
+			}
+			functio nihil exeque(~dordo_linearum imperatum) iacit redefini
+			{
+				si (!ctx.collectorium_currens) iace errores.habitus_falsus;
+				!collectorium currens;
+				si (imperatum.longitudo > 1) currens = ctx.collectorium_currens^.aperi_locationem(imperatum[1]);
+				alioqui currens = ctx.collectorium_currens;
+				var filii = currens^.filii;
+				ordo linea tab;
+				ordo consolatorium.color clr;
+				per (var i : filii) {
+					si (filii[i].secundus == remota.systema_limarum.genus_objecti.lima) {
+						proba {
+							var lima = currens^.aperi_limam(filii[i].primus, 0);
+							var modus = lima^.permissiones;
+							var tempus = lima^.tempi.secundus;
+							var longitudo = lima^.longitudo;
+							tab << ("-" + _lnmd(modus.primus) + _lnmd(modus.secundus) + _lnmd(modus.tertius));
+							tab << linea(longitudo);
+							tab << tempus.ad_lineam();
+							tab << filii[i].primus;
+							clr << consolatorium.color(consolatorium.color.defalta) << consolatorium.color(consolatorium.color.albus) << consolatorium.color(consolatorium.color.flavus);
+						} cape {
+							tab << ("----------");
+							tab << "-";
+							tab << "-";
+							tab << filii[i].primus;
+							clr << consolatorium.color(consolatorium.color.ruber) << consolatorium.color(consolatorium.color.ruber) << consolatorium.color(consolatorium.color.ruber);
+						}
+						clr << consolatorium.color(consolatorium.color.albus);
+					} alioqui si (filii[i].secundus == remota.systema_limarum.genus_objecti.collectorium) {
+						proba {
+							var col = currens^.aperi_locationem(filii[i].primus);
+							var md = col^.modus;
+							tab << ("d" + _lnmd(md) + _lnmd(0) + _lnmd(0));
+							tab << "-";
+							tab << "-";
+							tab << filii[i].primus;
+							clr << consolatorium.color(consolatorium.color.defalta) << consolatorium.color(consolatorium.color.griseus_tenebrosus) << consolatorium.color(consolatorium.color.griseus_tenebrosus);
+						} cape {
+							tab << ("d---------");
+							tab << "-";
+							tab << "-";
+							tab << filii[i].primus;
+							clr << consolatorium.color(consolatorium.color.ruber) << consolatorium.color(consolatorium.color.ruber) << consolatorium.color(consolatorium.color.ruber);
+						}
+						clr << consolatorium.color(consolatorium.color.lazulinus);
+					} alioqui {
+						tab << ("?---------");
+						tab << "-";
+						tab << "-";
+						tab << filii[i].primus;
+						clr << consolatorium.color(consolatorium.color.griseus_tenebrosus) << consolatorium.color(consolatorium.color.griseus_tenebrosus) << consolatorium.color(consolatorium.color.griseus_tenebrosus) << consolatorium.color(consolatorium.color.griseus_tenebrosus);
+					}
+				}
+				_scribe_tabulationem(tab, clr, 4);
+			}
+			functio ordo linea ende(~dordo_linearum imperatum, logicum argumentum_novum) iacit redefini {
+
+				// TODO: IMPLEMENT
+				iace errores.implantatio_nulla;
+
+			}
+		}
+		["imperatum" "mv"]
+		structura mv hereditat imperatum {
+			functio nihil exeque(~dordo_linearum imperatum) iacit redefini
+			{
+				si (!ctx.collectorium_currens) iace errores.habitus_falsus;
+				si (imperatum.longitudo <= 2) iace errores.argumentum_falsum;
+				ctx.collectorium_currens^.move_filium(imperatum[1], imperatum[2]);
+			}
+			functio ordo linea ende(~dordo_linearum imperatum, logicum argumentum_novum) iacit redefini {
+
+				// TODO: IMPLEMENT
+				iace errores.implantatio_nulla;
+
+			}
+		}
+		["imperatum" "cp"]
+		structura cp hereditat imperatum {
+			functio nihil exeque(~dordo_linearum imperatum) iacit redefini
+			{
+				si (!ctx.collectorium_currens) iace errores.habitus_falsus;
+				si (imperatum.longitudo <= 2) iace errores.argumentum_falsum;
+				enumeratores.dorsum_remotum dr(ctx.collectorium_currens, imperatum[1]);
+				var ~ basis = imperatum[2];
+				per (var oe : dr) {
+					var o = oe.valor;
+					var on = basis + o.tertius;
+					proba {
+						si (o.quartus == remota.systema_limarum.genus_objecti.collectorium) {
+							proba ctx.collectorium_currens^.crea_collectorium(on); cape (nintadl e, nintadl se) {
+								si (e != errores.ie_falsum || se != errores.ie_lima_preexistat) iace e, se;
+							}
+						} alioqui si (o.quartus == remota.systema_limarum.genus_objecti.lima) {
+							proba ctx.collectorium_currens^.remove_filium(on);
+							proba ctx.collectorium_currens^.crea_limam(on); cape (nintadl e, nintadl se) {
+								si (e != errores.ie_falsum || se != errores.ie_lima_preexistat) iace e, se;
+							}
+							var ex = o.primus^.aperi_limam(o.secundus, modus_limae.legere);
+							var ad = ctx.collectorium_currens^.aperi_limam(on, modus_limae.scribere);
+							var fl_ex = remota.systema_limarum.crea_flumen(ex);
+							var fl_ad = remota.systema_limarum.crea_flumen(ad);
+							fl_ex^.exscribe(fl_ad);
+							proba ad^.permissiones = ex^.permissiones;
+							proba ad^.tempi = ex^.tempi;
+						}
+					} cape (nintadl e, nintadl se) {
+						con.color_primus = consolatorium.color.ruber;
+						con.scribe_lineam(on);
+						con.color_primus = consolatorium.color.defalta;
+						iace e, se;
+					}
+				}
+			}
+			functio ordo linea ende(~dordo_linearum imperatum, logicum argumentum_novum) iacit redefini {
+
+				// TODO: IMPLEMENT
+				iace errores.implantatio_nulla;
+
+			}
+		}
+		["imperatum" "rm"]
+		structura rm hereditat imperatum {
+			functio nihil exeque(~dordo_linearum imperatum) iacit redefini
+			{
+				si (!ctx.collectorium_currens) iace errores.habitus_falsus;
+				si (imperatum.longitudo <= 1) iace errores.argumentum_falsum;
+				enumeratores.dorsum_remotum dr(ctx.collectorium_currens, imperatum[1]);
+				ordo (!collectorium, linea, linea, nint) o;
+				per (var oe : dr) o.adde(oe.valor);
+				per (var i : ~o) proba o[i].primus^.remove_filium(o[i].secundus); cape (nintadl e, nintadl se) {
+					con.color_primus = consolatorium.color.ruber;
+					con.scribe_lineam(o[i].primus^.semita + "/" + o[i].secundus);
+					con.color_primus = consolatorium.color.defalta;
+					iace e, se;
+				}
+			}
+			functio ordo linea ende(~dordo_linearum imperatum, logicum argumentum_novum) iacit redefini {
+
+				// TODO: IMPLEMENT
+				iace errores.implantatio_nulla;
+
+			}
+		}
+		["imperatum" "mkdir"]
+		structura mkdir hereditat imperatum {
+			functio nihil exeque(~dordo_linearum imperatum) iacit redefini
+			{
+				si (!ctx.collectorium_currens) iace errores.habitus_falsus;
+				si (imperatum.longitudo <= 1) iace errores.argumentum_falsum;
+				ctx.collectorium_currens^.crea_collectorium(imperatum[1]);
+			}
+			functio ordo linea ende(~dordo_linearum imperatum, logicum argumentum_novum) iacit redefini {
+
+				// TODO: IMPLEMENT
+				iace errores.implantatio_nulla;
+
+			}
+		}
+		["imperatum" "quota"]
+		structura quota hereditat imperatum {
+			functio nihil exeque(~dordo_linearum imperatum) iacit redefini
+			{
+				si (!ctx.collectorium_currens) iace errores.habitus_falsus;
+				!collectorium currens;
+				si (imperatum.longitudo > 1) currens = ctx.collectorium_currens^.aperi_locationem(imperatum[1]);
+				alioqui currens = ctx.collectorium_currens;
+				var q = currens^.quota;
+				con.scribe_lineam(linea.forma("%0 / %1 / %2", q.primus, q.secundus, q.tertius));
+			}
+			functio ordo linea ende(~dordo_linearum imperatum, logicum argumentum_novum) iacit redefini {
+
+				// TODO: IMPLEMENT
+				iace errores.implantatio_nulla;
+
+			}
+		}
+		["imperatum" "chmod"]
+		structura chmod hereditat imperatum {
+			functio nihil exeque(~dordo_linearum imperatum) iacit redefini
+			{
+				si (!ctx.collectorium_currens) iace errores.habitus_falsus;
+				si (imperatum.longitudo <= 2) iace errores.argumentum_falsum;
+				nint mod = imperatum[1].ad_nint32(linea.radix_octava);
+				var lima = ctx.collectorium_currens^.aperi_limam(imperatum[2], 0);
+				lima^.permissiones = ((mod >> nint(6)) & nint(7), (mod >> nint(3)) & nint(7), mod & nint(7));
+			}
+			functio ordo linea ende(~dordo_linearum imperatum, logicum argumentum_novum) iacit redefini {
+
+				// TODO: IMPLEMENT
+				iace errores.implantatio_nulla;
+
+			}
+		}
+		["imperatum" "onera"]
+		structura onera hereditat imperatum {
+			functio nihil exeque(~dordo_linearum imperatum) iacit redefini
+			{
+				si (!ctx.collectorium_currens) iace errores.habitus_falsus;
+				si (imperatum.longitudo <= 1) iace errores.argumentum_falsum;
+				enumeratores.dorsum_locale dl(imperatum[1]);
+				linea basis;
+				si (imperatum.longitudo > 2) basis = imperatum[2];
+				per (var oe : dl) {
+					var o = oe.valor;
+					si (!basis.longitudo) basis = o.primus.nomen;
+					var on = basis + o.secundus;
+					proba {
+						si (o.tertius == remota.systema_limarum.genus_objecti.collectorium) {
+							proba ctx.collectorium_currens^.crea_collectorium(on); cape (nintadl e, nintadl se) {
+								si (e != errores.ie_falsum || se != errores.ie_lima_preexistat) iace e, se;
+							}
+						} alioqui si (o.tertius == remota.systema_limarum.genus_objecti.lima) {
+							proba ctx.collectorium_currens^.remove_filium(on);
+							proba ctx.collectorium_currens^.crea_limam(on); cape (nintadl e, nintadl se) {
+								si (e != errores.ie_falsum || se != errores.ie_lima_preexistat) iace e, se;
+							}
+							var ad = ctx.collectorium_currens^.aperi_limam(on, modus_limae.scribere);
+							var fl_ad = remota.systema_limarum.crea_flumen(ad);
+							var fl_ex = o.primus.crea_limam(modus_limae.legere, modus_creatoris.aperi_praesens);
+							fl_ex^.exscribe(fl_ad);
+							proba ad^.permissiones = (nint(int(fl_ex^.aditus_moderatoris)), nint(int(fl_ex^.aditus_grupi)), nint(int(fl_ex^.aditus_populum)));
+							proba ad^.tempi = (fl_ex^.tempus_creaturae, fl_ex^.tempus_alternationis, fl_ex^.tempus_apertionis);
+						}
+					} cape (nintadl e, nintadl se) {
+						con.color_primus = consolatorium.color.ruber;
+						con.scribe_lineam(on);
+						con.color_primus = consolatorium.color.defalta;
+						iace e, se;
+					}
+				}
+			}
+			functio ordo linea ende(~dordo_linearum imperatum, logicum argumentum_novum) iacit redefini {
+
+				// TODO: IMPLEMENT
+				iace errores.implantatio_nulla;
+
+			}
+		}
+		["imperatum" "pone"]
+		structura pone hereditat imperatum {
+			functio nihil exeque(~dordo_linearum imperatum) iacit redefini
+			{
+				si (!ctx.collectorium_currens) iace errores.habitus_falsus;
+				si (imperatum.longitudo <= 1) iace errores.argumentum_falsum;
+				enumeratores.dorsum_remotum dr(ctx.collectorium_currens, imperatum[1]);
+				linea basis;
+				si (imperatum.longitudo > 2) basis = imperatum[2];
+				per (var oe : dr) {
+					var o = oe.valor;
+					si (!basis.longitudo) basis = o.secundus;
+					semita on = basis + o.tertius;
+					proba {
+						si (o.quartus == remota.systema_limarum.genus_objecti.collectorium) {
+							proba on.crea_collectorium(); cape (nintadl e, nintadl se) {
+								si (e != errores.ie_falsum || se != errores.ie_lima_preexistat) iace e, se;
+							}
+						} alioqui si (o.quartus == remota.systema_limarum.genus_objecti.lima) {
+							proba on.remove();
+							var ex = o.primus^.aperi_limam(o.secundus, modus_limae.legere);
+							var fl_ex = remota.systema_limarum.crea_flumen(ex);
+							var fl_ad = on.crea_limam(modus_limae.scribere, modus_creatoris.crea_semper);
+							fl_ex^.exscribe(fl_ad);
+							proba {
+								var p = ex^.permissiones;
+								fl_ad^.aditus_moderatoris = int(p.primus);
+								fl_ad^.aditus_grupi = int(p.secundus);
+								fl_ad^.aditus_populum = int(p.tertius);
+							}
+							proba {
+								var t = ex^.tempi;
+								fl_ad^.tempus_creaturae = t.primus;
+								fl_ad^.tempus_alternationis = t.secundus;
+								fl_ad^.tempus_apertionis = t.tertius;
+							}
+						}
+					} cape (nintadl e, nintadl se) {
+						con.color_primus = consolatorium.color.ruber;
+						con.scribe_lineam(on);
+						con.color_primus = consolatorium.color.defalta;
+						iace e, se;
+					}
+				}
+			}
+			functio ordo linea ende(~dordo_linearum imperatum, logicum argumentum_novum) iacit redefini {
+
+				// TODO: IMPLEMENT
+				iace errores.implantatio_nulla;
+
+			}
+		}
+		["imperatum" "sha256"]
+		structura sha256 hereditat imperatum {
+			functio nihil exeque(~dordo_linearum imperatum) iacit redefini
+			{
+				si (!ctx.collectorium_currens) iace errores.habitus_falsus;
+				si (imperatum.longitudo <= 1) iace errores.argumentum_falsum;
+				var data = ctx.collectorium_currens^.aperi_limam(imperatum[1], modus_limae.legere)^.digestum_sha_256;
+				linea acc;
+				per (var i : data) acc += linea(nint(data[i]), linea.radix_sextadecima, 2);
+				con.scribe_lineam(acc);
+			}
+			functio ordo linea ende(~dordo_linearum imperatum, logicum argumentum_novum) iacit redefini {
+
+				// TODO: IMPLEMENT
+				iace errores.implantatio_nulla;
+
+			}
+		}
+		["imperatum" "expone"]
+		structura expone hereditat imperatum {
+			functio nihil exeque(~dordo_linearum imperatum) iacit redefini
+			{
+				si (!ctx.collectorium_currens) iace errores.habitus_falsus;
+				si (imperatum.longitudo <= 2) iace errores.argumentum_falsum;
+				var ~ modus = imperatum[1];
+				enumeratores.dorsum_remotum dr(ctx.collectorium_currens, imperatum[2]);
+				var obj = dr.initus();
+				si (obj != dr.post_finis()) {
+					var o = obj.valor;
+					var ex = o.primus^.aperi_limam(o.secundus, modus_limae.legere);
+					var fl_ex = remota.systema_limarum.crea_flumen(ex);
+					si (fl_ex^.longitudo > 0x1000000) iace errores.ie_falsum, errores.ie_lima_larga_nimium;
+					var flm = crea_flumenem_in_memoria();
+					fl_ex^.exscribe(flm);
+					fl_ex.depura();
+					ex.depura();
+					flm^.quaerita(0, flumen.initus);
+					si (modus == "textum") {
+						var dec = scriptio.decodifica(flm);
+						dum (!dec^.finis) con.scribe_lineam(dec^.lege_lineam());
+					} alioqui si (modus == "imago") {
+						var xc = con acsi (xx.xc);
+						var dec = imago.decodifica_replum(flm);
+						xc^.defini_imaginem_fundi(dec^.latitudo, dec^.altitudo);
+						xc^.defini_modum_imaginem_fundi(xx.xc.modus_imaginem_fundi.adtemperare);
+						var fundus = xc acsi (xx.fundus_consolatorii);
+						fundus^.synchroniza_cum_replo(dec);
+					} alioqui iace errores.argumentum_falsum;
+				}
+			}
+			functio ordo linea ende(~dordo_linearum imperatum, logicum argumentum_novum) iacit redefini {
+
+				// TODO: IMPLEMENT
+				iace errores.implantatio_nulla;
+
+			}
+		}
+	}
+}
+
+functio !communicatio.adloquium lege_ip_adloquium(~linea destinatio) iacit {
+	proba {
+		var ipv4 = crea(communicatio.adloquium_ipv4, destinatio);
+		responde ipv4 acsi (communicatio.adloquium);
+	}
+	proba {
+		var ipv6 = crea(communicatio.adloquium_ipv6, destinatio);
+		responde ipv6 acsi (communicatio.adloquium);
+	}
+	nint portus = ifr_portus_defaltus;
+	linea dominatus;
+	var del = destinatio.reperi_ultimum(":");
+	si (del >= 0) {
+		dominatus = destinatio.fragmentum(0, del);
+		portus = destinatio.fragmentum(del + 1, -1).ad_nint32();
+		si (!portus || portus >= 0x10000) iace errores.efformatio_falsa;
+	} alioqui dominatus = destinatio;
+	proba {
+		var adloq = communicatio.lege_adloquia(dominatus, portus, communicatio.adloquium_ipv4);
+		si (!adloq^.longitudo) iace errores.rete_defectum, errores.rete_adloquium_nullum;
+		responde adloq^[0];
+	}
+	proba {
+		var adloq = communicatio.lege_adloquia(dominatus, portus, communicatio.adloquium_ipv6);
+		si (!adloq^.longitudo) iace errores.rete_defectum, errores.rete_adloquium_nullum;
+		responde adloq^[0];
+	}
+	iace errores.argumentum_falsum;
+}
+functio nihil ini() iacit {
+	var arg = para_argumenta();
+	ctx.cauda = contextus.crea_caudam_simplicem();
+	ctx.finis = contextus.crea_signale();
+	ctx.procede = sic;
+	si (!ctx.finis || !ctx.cauda) iace errores.memoria_nulla;
+	ctx.filum = ctx.cauda^.exeque_in_filo();
+	si (!ctx.filum) iace errores.memoria_nulla;
+	var smbl = repulsus.para_symbola(modulus(), repulsus.symbola.generis, "imperatum");
+	per (var i : smbl^) {
+		var nomen = smbl^[i]^.attributa^["imperatum"];
+		repulsus.fabricatio_objectorum fab(smbl^[i] acsi (repulsus.symbolum_generis));
+		var imp = fab.crea_exemplar();
+		!imperatum imp1;
+		imp1.contine((@imperatum)(imp.valor()));
+		ctx.imperata.adde(nomen, imp1);
+	}
+	!communicatio.adloquium adloq;
+	communicatio.securitas sec;
+	logicum secure = non;
+	si (arg^.longitudo <= 1) {
+		con.scribe(lineae.adloquium);
+		si (!imperata.decompone(con.lege_lineam(), arg^)) iace errores.argumentum_falsum;
+		arg^.insere("", 0);
+	}
+	si (arg^[1].fragmentum(0, 6) == "ifr://") {
+		adloq = lege_ip_adloquium(arg^[1].fragmentum(6, -1));
+	} alioqui si (arg^[1].fragmentum(0, 7) == "ifrs://") {
+		adloq = lege_ip_adloquium(arg^[1].fragmentum(7, -1));
+		secure = sic;
+		sec.neglege = non;
+		per (int i = 2; i < arg^.longitudo; i++) {
+
+			iace errores.implantatio_nulla;
+			// TODO: IMPLEMENT TLS CONNECTION
+
+		}
+	} alioqui adloq.contine(crea(communicatio.adloquium_localis, arg^[1]));
+	var canale = communicatio.crea_canale();
+	si (secure) canale^.conjunge_synchrone(adloq^, sec); alioqui canale^.conjunge_synchrone(adloq^);
+	ctx.servus = crea(remota.servus, canale, ctx.cauda);
+	ctx.servus^.labos_closionis = contextus.labos ## { ctx.finis^.erige(); };
+	ctx.servus^.exeque();
+}
+functio nihil finaliza() iacit {
+	si (ctx.servus) ctx.servus^.clode();
+	si (ctx.cauda) ctx.cauda^.linque();
+	si (ctx.filum) ctx.filum^.opperire();
+}
+functio nihil _() introitus iacit {
+	proba {
+		ini();
+		dum (ctx.procede && !ctx.finis^.opperire(0)) {
+			con.color_primus = consolatorium.color.flavus;
+			con.scribe(ctx.quaesitum);
+			con.color_primus = consolatorium.color.viridis;
+			con.scribe(" > ");
+			con.color_primus = consolatorium.color.defalta;
+
+			// TODO: MODERNIZE INPUT
+			var imp = con.lege_lineam();
+
+			proba {
+				dordo_linearum impa;
+				si (!imperata.decompone(imp, impa)) dura;
+				var imp0 = ctx.imperata[impa[0]];
+				si (imp0 == nullus) iace errores.implantatio_nulla;
+				imp0^^.exeque(impa);
+			} cape (nintadl e, nintadl se) {
+				linea de, dse;
+				con.modus_currens = consolatorium.modus.repulsus;
+				con.color_primus = consolatorium.color.ruber;
+				errores.descriptio(e, se, de, dse);
+				con.scribe(lineae.error_imperati);
+				con.scribe(": " + de);
+				si (dse.longitudo) con.scribe(" - " + dse);
+				con.scribe_lineam();
+				con.color_primus = consolatorium.color.defalta;
+			}
+		}
+		si (ctx.finis^.opperire(0)) {
+			con.color_primus = consolatorium.color.flavus;
+			con.scribe_lineam(lineae.servus_closus);
+			con.color_primus = consolatorium.color.defalta;
+		}
+		finaliza();
+	} cape (nintadl e, nintadl se) {
+		linea de, dse;
+		con.modus_currens = consolatorium.modus.repulsus;
+		con.color_primus = consolatorium.color.ruber;
+		errores.descriptio(e, se, de, dse);
+		con.scribe_lineam();
+		con.scribe(lineae.error_communalis);
+		con.scribe(": " + de);
+		si (dse.longitudo) con.scribe(" - " + dse);
+		con.scribe_lineam();
+		con.color_primus = consolatorium.color.defalta;
+		finaliza();
+		iace e, se;
+	}
+}

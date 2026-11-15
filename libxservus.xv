@@ -5,7 +5,7 @@ auxilium attributum (meta.attributum_versio)			= "1.0.0.1";
 
 [[systema] librosa]
 
-importa http;
+importa collectiones;
 
 spatium xservus {
 	genus extensio hereditat objectum_dynamicum {

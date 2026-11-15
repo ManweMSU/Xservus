@@ -6,6 +6,7 @@ auxilium attributum (meta.attributum_versio)			= "1.0.0.1";
 [[systema] nulla]
 
 importa libxservus interne;
+importa communicatio;
 importa potentia;
 importa repulsus;
 importa formati;

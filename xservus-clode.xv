@@ -1,13 +1,12 @@
-﻿auxilium attributum (meta.attributum_nomen_moduli)		= "X Servus - Rector";
+﻿auxilium attributum (meta.attributum_nomen_moduli)		= "X Servus - Instrumentum Closionis";
 auxilium attributum (meta.attributum_iura_exempli)		= "© Engine Software. 2026";
 auxilium attributum (meta.attributum_creator_moduli)	= "Engine Software";
 auxilium attributum (meta.attributum_versio)			= "1.0.0.1";
 
-importa consolatorium;
+[[systema] nulla]
+
 importa communicatio;
 importa limae;
-
-var ~consolatorium con = consolatorium.currens()^;
 
 functio nihil _() introitus iacit {
 	proba {
@@ -26,21 +25,18 @@ functio nihil _() introitus iacit {
 			canale^.mitte_synchrone(data);
 			var r = canale^.admitte_synchrone(1);
 			canale^.clode(sic);
-			con.scribe(nomina[i] + ": ");
-			per (var j : r^) {
-				con.scribe(int(r^[j]) - '0');
-				con.scribe(" ");
-			}
-			con.scribe_lineam();
+			linea dex = nomina[i] + ": ";
+			per (var j : r^) dex += linea(int(r^[j]) - '0') + " ";
+			actuarius.scribe(dex);
 		} cape (nintadl e, nintadl se) {
-			linea de, dse;
+			linea de, dse, desc = nomina[i] + ": ";
 			errores.descriptio(e, se, de, dse);
-			con.scribe(nomina[i] + ": ");
-			si (dse.longitudo) con.scribe_lineam(de + " - " + dse); alioqui con.scribe_lineam(de);
+			si (dse.longitudo) desc += de + " - " + dse; alioqui desc += de;
+			actuarius.scribe(desc);
 		}
 	} cape (nintadl e, nintadl se) {
 		linea de, dse;
 		errores.descriptio(e, se, de, dse);
-		si (dse.longitudo) con.scribe_lineam(de + " - " + dse); alioqui con.scribe_lineam(de);
+		si (dse.longitudo) actuarius.scribe(de + " - " + dse); alioqui actuarius.scribe(de);
 	}
 }

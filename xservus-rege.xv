@@ -156,7 +156,10 @@ structura contextus_rectoris {
 	collectiones.dictionarium[linea, !imperatum] imperata;
 	logicum procede;
 	linea quaesitum;
+	linea nomen_usoris_defaltum;
+	linea clavis_usoris_defaltum;
 	!collectorium collectorium_currens;
+	ordo linea autoexec;
 
 	// TODO: ADDE HISTORIAM / CONTEXTUS INPONENDI
 
@@ -283,8 +286,8 @@ spatium imperata {
 		["imperatum" "authoriza"]
 		structura authoriza hereditat imperatum {
 			functio nihil exeque(~dordo_linearum imperatum) iacit redefini {
-				linea nomen = imperatum.longitudo > 1 ? imperatum[1] : "anonymous";
-				linea clavis = imperatum.longitudo > 2 ? imperatum[2] : "";
+				linea nomen = imperatum.longitudo > 1 ? imperatum[1] : ctx.nomen_usoris_defaltum;
+				linea clavis = imperatum.longitudo > 2 ? imperatum[2] : ctx.clavis_usoris_defaltum;
 				!remota.systema_limarum.authorizator sl_auth;
 				!remota.xservus.authorizator rs_auth;
 				proba sl_auth = remota.crea_exemplar(ctx.servus, remota.systema_limarum.authorizator) acsi (remota.systema_limarum.authorizator);
@@ -331,7 +334,20 @@ spatium imperata {
 		}
 		["imperatum" "depura"]
 		structura depura hereditat imperatum {
-			functio nihil exeque(~dordo_linearum imperatum) iacit redefini { con.depura_cunctum(); }
+			functio nihil exeque(~dordo_linearum imperatum) iacit redefini {
+				si (imperatum.longitudo > 1 && imperatum[1] == "fundum") con acsi (xx.xc)^.retexe_imaginem_fundi();
+				alioqui con.depura_cunctum();
+			}
+			functio ordo linea ende(~dordo_linearum imperatum, logicum argumentum_novum) iacit redefini {
+
+				// TODO: IMPLEMENT
+				iace errores.implantatio_nulla;
+
+			}
+		}
+		["imperatum" "persiste"]
+		structura persiste hereditat imperatum {
+			functio nihil exeque(~dordo_linearum imperatum) iacit redefini { con acsi (xx.xc)^.clode_fenestram = non; }
 			functio ordo linea ende(~dordo_linearum imperatum, logicum argumentum_novum) iacit redefini {
 
 				// TODO: IMPLEMENT
@@ -910,10 +926,12 @@ spatium imperata {
 functio !communicatio.adloquium lege_ip_adloquium(~linea destinatio) iacit {
 	proba {
 		var ipv4 = crea(communicatio.adloquium_ipv4, destinatio);
+		si (!ipv4^.portus) ipv4^.portus = ifr_portus_defaltus;
 		responde ipv4 acsi (communicatio.adloquium);
 	}
 	proba {
 		var ipv6 = crea(communicatio.adloquium_ipv6, destinatio);
+		si (!ipv6^.portus) ipv6^.portus = ifr_portus_defaltus;
 		responde ipv6 acsi (communicatio.adloquium);
 	}
 	nint portus = ifr_portus_defaltus;
@@ -941,6 +959,8 @@ functio nihil ini() iacit {
 	ctx.cauda = contextus.crea_caudam_simplicem();
 	ctx.finis = contextus.crea_signale();
 	ctx.procede = sic;
+	ctx.nomen_usoris_defaltum = "anonymous";
+	ctx.clavis_usoris_defaltum = "";
 	si (!ctx.finis || !ctx.cauda) iace errores.memoria_nulla;
 	ctx.filum = ctx.cauda^.exeque_in_filo();
 	si (!ctx.filum) iace errores.memoria_nulla;
@@ -961,19 +981,46 @@ functio nihil ini() iacit {
 		si (!imperata.decompone(con.lege_lineam(), arg^)) iace errores.argumentum_falsum;
 		arg^.insere("", 0);
 	}
-	si (arg^[1].fragmentum(0, 6) == "ifr://") {
-		adloq = lege_ip_adloquium(arg^[1].fragmentum(6, -1));
-	} alioqui si (arg^[1].fragmentum(0, 7) == "ifrs://") {
-		adloq = lege_ip_adloquium(arg^[1].fragmentum(7, -1));
-		secure = sic;
-		sec.neglege = non;
-		per (int i = 2; i < arg^.longitudo; i++) {
-
-			iace errores.implantatio_nulla;
-			// TODO: IMPLEMENT TLS CONNECTION
-
+	dum (sic) {
+		si (arg^[1].fragmentum(0, 6) == "ifr://") {
+			adloq = lege_ip_adloquium(arg^[1].fragmentum(6, -1));
+			per (int i = 2; i < arg^.longitudo; i++) {
+				si (arg^[i].fragmentum(0, 5) == "usor=") ctx.nomen_usoris_defaltum = arg^[i].fragmentum(5, -1);
+				alioqui si (arg^[i].fragmentum(0, 7) == "clavis=") ctx.clavis_usoris_defaltum = arg^[i].fragmentum(7, -1);
+				alioqui iace errores.argumentum_falsum;
+			}
+			exi;
+		} alioqui si (arg^[1].fragmentum(0, 7) == "ifrs://") {
+			adloq = lege_ip_adloquium(arg^[1].fragmentum(7, -1));
+			secure = sic;
+			sec.neglege = non;
+			per (int i = 2; i < arg^.longitudo; i++) {
+				si (arg^[i].fragmentum(0, 5) == "usor=") ctx.nomen_usoris_defaltum = arg^[i].fragmentum(5, -1);
+				alioqui si (arg^[i].fragmentum(0, 7) == "clavis=") ctx.clavis_usoris_defaltum = arg^[i].fragmentum(7, -1);
+				alioqui si (arg^[i].fragmentum(0, 10) == "dominatus=") sec.dominatus = arg^[i].fragmentum(10, -1);
+				alioqui si (arg^[i].fragmentum(0, 13) == "certificatus=") sec.certificatus = semita(arg^[i].fragmentum(13, -1)).crea_limam(modus_limae.legere, modus_creatoris.aperi_praesens)^.lege_ordinem();
+				alioqui si (arg^[i] == "neglege") sec.neglege = sic;
+				alioqui iace errores.argumentum_falsum;
+			}
+			exi;
+		} alioqui si (arg^[1].fragmentum(0, 7) == "ifrl://") {
+			adloq.contine(crea(communicatio.adloquium_localis, arg^[1].fragmentum(7, -1)));
+			per (int i = 2; i < arg^.longitudo; i++) {
+				si (arg^[i].fragmentum(0, 5) == "usor=") ctx.nomen_usoris_defaltum = arg^[i].fragmentum(5, -1);
+				alioqui si (arg^[i].fragmentum(0, 7) == "clavis=") ctx.clavis_usoris_defaltum = arg^[i].fragmentum(7, -1);
+				alioqui iace errores.argumentum_falsum;
+			}
+			exi;
+		} alioqui {
+			var dec = scriptio.decodifica(semita(arg^[1]).crea_limam(modus_limae.legere, modus_creatoris.aperi_praesens));
+			si (!imperata.decompone(dec^.lege_lineam(), arg^)) iace errores.argumentum_falsum;
+			arg^.insere("", 0);
+			dum (!dec^.finis) {
+				var i = dec^.lege_lineam();
+				si (i.longitudo) ctx.autoexec.adde(i);
+			}
 		}
-	} alioqui adloq.contine(crea(communicatio.adloquium_localis, arg^[1]));
+	}
 	var canale = communicatio.crea_canale();
 	si (secure) canale^.conjunge_synchrone(adloq^, sec); alioqui canale^.conjunge_synchrone(adloq^);
 	ctx.servus = crea(remota.servus, canale, ctx.cauda);
@@ -991,13 +1038,20 @@ functio nihil _() introitus iacit {
 		dum (ctx.procede && !ctx.finis^.opperire(0)) {
 			con.color_primus = consolatorium.color.flavus;
 			con.scribe(ctx.quaesitum);
-			con.color_primus = consolatorium.color.viridis;
+			con.color_primus = ctx.autoexec.longitudo ? consolatorium.color.blavius : consolatorium.color.viridis;
 			con.scribe(" > ");
 			con.color_primus = consolatorium.color.defalta;
+			linea imp;
+			si (ctx.autoexec.longitudo) {
+				imp = ctx.autoexec[0];
+				ctx.autoexec.remove_primum();
+				con.scribe_lineam(imp);
+			} alioqui {
 
-			// TODO: MODERNIZE INPUT
-			var imp = con.lege_lineam();
+				// TODO: MODERNIZE INPUT
+				imp = con.lege_lineam();
 
+			}
 			proba {
 				dordo_linearum impa;
 				si (!imperata.decompone(imp, impa)) dura;

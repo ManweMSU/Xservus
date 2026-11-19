@@ -25,5 +25,6 @@ xv ifr_rs.xv -N
 xv xifr_rs.xv -NO bin
 
 echo Creo rectorem
+xv processor_imponendi.xv -N
 xv xservus-rege.xv -Nlo sl bin/xservus-rege.xx
 chmod 755 bin/xservus-rege.xx

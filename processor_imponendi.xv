@@ -1,0 +1,321 @@
+﻿auxilium attributum (meta.attributum_nomen_moduli)		= "Liber Processoris Imponendi";
+auxilium attributum (meta.attributum_iura_exempli)		= "© Engine Software. 2026";
+auxilium attributum (meta.attributum_creator_moduli)	= "Engine Software";
+auxilium attributum (meta.attributum_versio)			= "1.0.0.1";
+
+[[systema] librosa]
+
+importa consolatorium;
+
+spatium impositio {
+	protocollum responsor_processoris {
+		functio logicum comple(~ordo char data, ~nint positus, ~ordo (linea, consolatorium.color) variati) iacit virtualis pura;
+		functio logicum rota_ad_pristino(~ordo char data) iacit virtualis pura;
+		functio logicum rota_ad_proximo(~ordo char data) iacit virtualis pura;
+	}
+	genus processor {
+		~consolatorium _con;
+		~responsor_processoris _resp;
+		ordo char _data;
+		ordo consolatorium.positus _positi;
+		consolatorium.positus _positus_finalis;
+		nint _pos; nint _yq; nint _lu; int _rex_de; logicum _rml;
+
+		structor (~consolatorium con, ~responsor_processoris resp) iacit { funda _con(con); funda _resp(resp); }
+		functio nihil _depura(int altitudo) iacit {
+			per (var y = _yq; y < altitudo; y++) {
+				_con.cursor = consolatorium.positus(0, y);
+				_con.depura_lineam();
+			}
+		}
+		functio nihil _expone(~ordo char data, ~ordo consolatorium.color colores, int pdelta, int de, int latitudo) iacit {
+			int vx = 0, vy = _yq, i = 0;
+			logicum cpos = non;
+			dum (i < data.longitudo) {
+				int f = i, ix = vx;
+				dum (f < data.longitudo && colores[f] == colores[i] && vx < latitudo) { f++; vx++; }
+				si (f > de) {
+					si (i < de) { ix += de - i; i = de; }
+					si (!cpos) {
+						cpos = sic;
+						_con.cursor = consolatorium.positus(ix, vy);
+					}
+					_con.color_primus = colores[i];
+					_con << linea(@data[i], f - i, linea.codex.utf32);
+					per (var j = i; j < f; j++) {
+						int k = j - pdelta;
+						si (k >= 0) _positi[k] = consolatorium.positus(ix + j - i, vy);
+					}
+				}
+				i = f;
+				si (vx == latitudo) {
+					vx = 0; vy++;
+					si (cpos) _con << "\r\n";
+				}
+			}
+			_positus_finalis = consolatorium.positus(vx, vy);
+			_lu = vy - _yq + 1;
+			int dy = vy - _con.cursor.y;
+			si (dy > 0) {
+				_yq -= dy;
+				per (var i : _positi) _positi[i].y -= dy;
+				_positus_finalis.y -= dy;
+			}
+			si (_rml) {
+				si (!cpos) _con.cursor = _positus_finalis;
+				_con << " ";
+				_rml = non;
+			}
+		}
+		functio nihil _repone_cursorem() iacit { si (_pos < _positi.longitudo) _con.cursor = _positi[_pos]; alioqui _con.cursor = _positus_finalis; }
+		functio linea impone(~linea q1, consolatorium.color c1, ~linea q2, consolatorium.color c2, consolatorium.color c0) iacit {
+			_data.depura();
+			_positi.depura();
+			_pos = 0; _lu = 0; _rex_de = -1; _rml = non;
+			_con.modus_currens = consolatorium.modus.purus;
+			proba {
+				var magn = _con.magnitudines;
+				_yq = _con.cursor.y;
+				tempus te = tempus(nint64(0));
+				ordo char xd;
+				ordo consolatorium.color xc;
+				per (var i : q1) { xd.adde(q1[i]); xc.adde(c1); }
+				per (var i : q2) { xd.adde(q2[i]); xc.adde(c2); }
+				var xb = xd.longitudo;
+				dum (sic) {
+					var magn_nov = _con.magnitudines;
+					si (magn_nov.x != magn.x) _rex_de = -1;
+					magn = magn_nov;
+					xd.longitudo = xb + _data.longitudo;
+					xc.longitudo = xb + _data.longitudo;
+					memoria.exscribe(@xd.data[xb], _data.data, _data.longitudo * magnitudo(char));
+					per (var i : _data) xc[xb + i] = c0;
+					si (_rex_de < 0) {
+						_depura(_yq + _lu);
+						_expone(xd, xc, xb, 0, magn.x);
+					} alioqui si (_rex_de < _data.longitudo || _rml) {
+						_expone(xd, xc, xb, xb + _rex_de, magn.x);
+					}
+					_rex_de = _data.longitudo;
+					_repone_cursorem();
+					consolatorium.eventum ev;
+					_con.lege_eventum(ev);
+					si (ev.codex_eventi == consolatorium.codex_eventi.character_in) {
+						si (ev.character >= ' ') {
+							_data.insere(ev.character, _pos);
+							_positi.insere(consolatorium.positus(0, 0), _pos);
+							_rex_de = _pos; _pos++;
+						} alioqui si (ev.character >= '\r') {
+							si ((tempus.currens() - te).momentum > 100) exi;
+						} alioqui si (ev.character >= '\t') {
+							ordo (linea, consolatorium.color) variati;
+							si (_resp.comple(_data, _pos, variati)) {
+								si (variati.longitudo) {
+									_con.cursor = _positus_finalis;
+									_con << "\r\n";
+									nint vx = 0;
+									per (var i : variati) {
+										var lr = variati[i].primus.longitudo;
+										si (magn.x - vx + 1 < lr && vx) { _con << "\r\n  "; vx = 2; }
+										alioqui si (vx) { _con << " "; vx++; }
+										alioqui { _con << "  "; vx = 2; }
+										_con.color_primus = variati[i].secundus;
+										_con << variati[i].primus;
+										vx += lr;
+									}
+									si (vx) _con << "\r\n";
+									_positi.longitudo = _data.longitudo;
+									si (_pos > nint(_data.longitudo)) _pos = _data.longitudo;
+									_lu = 0; _rex_de = -1; _rml = non;
+									_yq = _con.cursor.y;
+								} alioqui {
+									_positi.longitudo = _data.longitudo;
+									si (_pos > nint(_data.longitudo)) _pos = _data.longitudo;
+									_rex_de = -1; _rml = non;
+								}
+							}
+						}
+					} alioqui si (ev.codex_eventi == consolatorium.codex_eventi.tactus_in) {
+						si (ev.tactus == tactus.back && ev.status_tactus == 0 && _pos > 0) {
+							_data.remove(_pos - 1);
+							_positi.remove(_pos - 1);
+							_pos--; _rex_de = _pos; _rml = sic;
+						} alioqui si (ev.tactus == tactus.delete && ev.status_tactus == 0 && _pos < _data.longitudo) {
+							_data.remove(_pos);
+							_positi.remove(_pos);
+							_rex_de = _pos; _rml = sic;
+						} alioqui si (ev.tactus == tactus.left && ev.status_tactus == 0 && _pos > 0) {
+							_pos--;
+						} alioqui si (ev.tactus == tactus.right && ev.status_tactus == 0 && _pos < _data.longitudo) {
+							_pos++;
+						} alioqui si (ev.tactus == tactus.up && ev.status_tactus == 0) {
+							si (_resp.rota_ad_pristino(_data)) {
+								_positi.longitudo = _data.longitudo;
+								_pos = _data.longitudo;
+								_rex_de = -1;
+							}
+						} alioqui si (ev.tactus == tactus.down && ev.status_tactus == 0) {
+							si (_resp.rota_ad_proximo(_data)) {
+								_positi.longitudo = _data.longitudo;
+								_pos = _data.longitudo;
+								_rex_de = -1;
+							}
+						} alioqui si (ev.tactus == tactus.escape && ev.status_tactus == 0) {
+							_data.depura();
+							_positi.depura();
+							_pos = 0; _rex_de = -1; te = tempus.currens();
+						}
+					} alioqui si (ev.codex_eventi == consolatorium.codex_eventi.finis_fluminis) {
+						iace errores.habitus_falsus;
+					}
+				}
+				_pos = _data.longitudo;
+				_repone_cursorem();
+				_con << "\r\n";
+			} cape (nintadl e, nintadl se) {
+				_con.color_primus = consolatorium.color.defalta;
+				_con.modus_currens = consolatorium.modus.repulsus;
+				iace e, se;
+			}
+			_con.color_primus = consolatorium.color.defalta;
+			_con.modus_currens = consolatorium.modus.repulsus;
+			responde linea(_data.data, _data.longitudo, linea.codex.utf32);
+		}
+	}
+}
+spatium imperata {
+	functio logicum _lege_argumetum(~linea in, ~int pos, int long, ~linea arg) iacit
+	{
+		dum (pos < long && (in[pos] == ' ' || in[pos] == '\t')) pos++;
+		si (pos >= long) responde non;
+		si (in[pos] == '\'') {
+			ordo char acc;
+			pos++;
+			dum (pos < long) {
+				si (in[pos] == '\'') {
+					pos++;
+					si (in[pos] == '\'') {
+						acc.adde(in[pos]);
+						pos++;
+					} alioqui exi;
+				} alioqui {
+					acc.adde(in[pos]);
+					pos++;
+				}
+			}
+			arg = linea(acc.data, acc.longitudo, linea.codex.utf32);
+		} alioqui {
+			int i = pos;
+			dum (pos < long && in[pos] != ' ' && in[pos] != '\t') pos++;
+			arg = in.fragmentum(i, pos - i);
+		}
+		responde sic;
+	}
+	functio logicum decompone(~linea in, ~ordo linea imperatum, ~int poscnv)
+	{
+		proba {
+			int pos = 0, long = in.longitudo, posarg = -1;
+			imperatum.depura();
+			logicum lectum = sic;
+			dum (lectum) {
+				linea arg;
+				lectum = _lege_argumetum(in, pos, long, arg);
+				si (lectum) {
+					si (posarg < 0 && poscnv <= pos) posarg = imperatum.longitudo;
+					imperatum.adde(arg);
+				}
+			}
+			poscnv = posarg;
+			responde imperatum.longitudo > 0;
+		} cape responde non;
+	}
+	functio logicum decompone(~linea in, ~ordo linea imperatum) { responde decompone(in, imperatum, int()); }
+	functio nihil recompone(~ordo char ex, ~ordo linea imperatum, ~int poscnv) iacit {
+		ex.depura();
+		var narg = poscnv;
+		per (var i : imperatum) {
+			var ~ arg = imperatum[i];
+			logicum decora = arg.reperi_primum(" ") >= 0 || arg.reperi_primum("\'") >= 0;
+			si (ex.longitudo) ex.adde(' ');
+			si (decora) ex.adde('\'');
+			per (var j : arg) {
+				si (arg[j] == '\'') { ex.adde('\''); ex.adde('\''); }
+				alioqui ex.adde(arg[j]);
+			}
+			si (narg == i) poscnv = ex.longitudo;
+			si (decora) ex.adde('\'');
+		}
+	}
+	
+	structura contextus_complendi {
+		ordo linea argumenta;
+		nint comple_argumentum;
+		ordo (linea, consolatorium.color) variati;
+	}
+	protocollum responsor_processoris {
+		functio logicum comple(~contextus_complendi ctx) iacit virtualis pura;
+	}
+	genus processor hereditat objectum : impositio.responsor_processoris {
+		impositio.processor _proc;
+		~responsor_processoris _resp;
+		ordo linea _historia;
+		int _positus_in_historia;
+
+		structor (~consolatorium con, ~responsor_processoris resp) iacit {
+			funda _proc(con, ego^);
+			funda _resp(resp);
+		}
+		functio logicum comple(~ordo char data, ~nint positus, ~ordo (linea, consolatorium.color) variati) iacit redefini {
+			int pos = positus;
+			contextus_complendi ctx;
+			si (!decompone(linea(data.data, data.longitudo, linea.codex.utf32), ctx.argumenta, pos)) {
+				ctx.argumenta.depura();
+				ctx.argumenta.adde("");
+				ctx.comple_argumentum = pos = 0;
+			} alioqui {
+				si (pos < 0) {
+					pos = ctx.argumenta.longitudo;
+					ctx.argumenta.adde("");
+				}
+				ctx.comple_argumentum = pos;
+			}
+			si (_resp.comple(ctx)) {
+				recompone(data, ctx.argumenta, pos);
+				positus = pos;
+				variati = ctx.variati;
+				responde sic;
+			} alioqui responde non;
+		}
+		functio logicum rota_ad_pristino(~ordo char data) iacit redefini {
+			si (_positus_in_historia == 0 || !_historia.longitudo) responde non;
+			si (_positus_in_historia < 0) _positus_in_historia = _historia.longitudo;
+			_positus_in_historia--;
+			var ~ h = _historia[_positus_in_historia];
+			data.longitudo = h.longitudo_codicis(linea.codex.utf32);
+			h.codifica(data.data, linea.codex.utf32, non);
+			responde sic;
+		}
+		functio logicum rota_ad_proximo(~ordo char data) iacit redefini {
+			si (_positus_in_historia < 0 || !_historia.longitudo) responde non;
+			_positus_in_historia++;
+			si (_positus_in_historia >= _historia.longitudo) {
+				_positus_in_historia = -1;
+				data.depura();
+			} alioqui {
+				var ~ h = _historia[_positus_in_historia];
+				data.longitudo = h.longitudo_codicis(linea.codex.utf32);
+				h.codifica(data.data, linea.codex.utf32, non);
+			}
+			responde sic;
+		}
+		functio linea impone(~linea q1, consolatorium.color c1, ~linea q2, consolatorium.color c2, consolatorium.color c0) iacit {
+			_positus_in_historia = -1;
+			var r = _proc.impone(q1, c1, q2, c2, c0);
+			si (_positus_in_historia < 0 || r != _historia[_positus_in_historia]) {
+				dum (_historia.longitudo >= 0x100) _historia.remove_primum();
+				_historia.adde(r);
+			}
+			responde r;
+		}
+	}
+}

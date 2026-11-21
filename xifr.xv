@@ -167,7 +167,7 @@ spatium xservus {
 		functio nihil ini(@extensio basis, ~collectiones.dictionarium[linea, linea] arg) iacit redefini {
 			_argumenta = arg;
 			_parens = basis;
-			portus = 0;
+			portus = 10666;
 			var aarg = _argumenta["modus"];
 			si (aarg != nullus) {
 				si (aarg^ # "ifr-locale" == 0) modus = 0;

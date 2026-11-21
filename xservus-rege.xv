@@ -14,9 +14,9 @@ importa processor_imponendi interne;
 constatus ifr_portus_defaltus = nint(10666);
 var ~consolatorium con = consolatorium.currens()^;
 spatium lineae {
-	constatus adloquium = "Adloquium: "
-		{ "ru", "Адрес сервера: " }
-		{ "en", "Server address: " };
+	constatus adloquium = "Imperatum adnectionis: "
+		{ "ru", "Команда подключения: " }
+		{ "en", "The connection command: " };
 	constatus error_communalis = "ERROR COMMUNALIS"
 		{ "ru", "ОБЩАЯ ОШИБКА ИСПОЛНЕНИЯ" }
 		{ "en", "COMMON EXECUTION ERROR" };
@@ -140,6 +140,7 @@ genus imperatum hereditat objectum {
 	}
 	functio nihil exeque(~dordo_linearum imperatum) iacit virtualis pura;
 	functio logicum comple(~imperata.contextus_complendi ctx) iacit virtualis pura;
+	functio linea descriptio(logicum ultima) iacit virtualis pura;
 }
 genus collectorium hereditat objectum {
 	!collectiones.dictionarium[linea, !remota.systema_limarum.locatio] _radices;
@@ -321,6 +322,63 @@ spatium enumeratores {
 }
 spatium imperata {
 	spatium implantationes {
+		["imperatum" "juva"]
+		structura juva hereditat imperatum {
+			classis functio nihil _scribe_tabulationem(~ordo linea tab, ~ordo consolatorium.color colores, nint ncol) iacit {
+				si (tab.longitudo != colores.longitudo) iace errores.argumentum_falsum;
+				ordo nint clat;
+				nint nlin = tab.longitudo / ncol;
+				per (var c : [0, ncol - 1]) {
+					nint mx = 0;
+					per (var i : [0, nlin - 1]) {
+						var long = tab[c + i * ncol].longitudo;
+						si (long > mx) mx = long;
+					}
+					clat << mx;
+				}
+				per (var j : [0, nlin - 1]) {
+					per (var i : [0, ncol - 1]) {
+						nint k = i + j * ncol;
+						con.color_primus = colores[k];
+						con.scribe(tab[k]);
+						con.scribe(linea(' ', clat[i] - tab[k].longitudo));
+						si (i == ncol - 1) con.scribe_lineam(); alioqui con.scribe(" ");
+					}
+				}
+				con.color_primus = consolatorium.color.defalta;
+			}
+			functio nihil exeque(~dordo_linearum imperatum) iacit redefini {
+				si (imperatum.longitudo > 1) {
+					var imp = .ctx.imperata[imperatum[1]];
+					si (imp == nullus) iace errores.argumentum_falsum;
+					con.scribe(imp^^.descriptio(sic));
+				} alioqui {
+					ordo linea tab;
+					ordo consolatorium.color clr;
+					per (var i : .ctx.imperata) {
+						tab.adde(i^.valor.primus);
+						tab.adde("- " + i^.valor.secundus^.descriptio(non));
+						clr.adde(consolatorium.color(consolatorium.color.ruber));
+						clr.adde(consolatorium.color(consolatorium.color.defalta));
+					}
+					_scribe_tabulationem(tab, clr, 2);
+				}
+			}
+			functio logicum comple(~imperata.contextus_complendi ctx) iacit redefini {
+				si (ctx.comple_argumentum == 1) {
+					ordo (linea, consolatorium.color) vr;
+					per (var i : .ctx.imperata) vr.adde((i^.valor.primus, consolatorium.color(consolatorium.color.ruber)));
+					responde imperatum.comple_cum_variatis(ctx, vr);
+				} alioqui responde non;
+			}
+			functio linea descriptio(logicum ultima) iacit redefini { si (ultima) responde descriptio_imperati_ultima; alioqui responde descriptio_imperati_brevis; }
+			constatus descriptio_imperati_brevis = "cum imperatis adjuvat"
+				{ "ru", "оказывает помощь по командам" }
+				{ "en", "provides help with command" };
+			constatus descriptio_imperati_ultima = "  juva\nInformationem per imperatibus rectoris omnibus exponit.\n  juva nomen\nInformationem per imperato 'nomen' exponit.\n"
+				{ "ru", "  juva\nВыводит информацию обо всех командах.\n  juva nomen\nВыводит информацию о команде 'nomen'.\n" }
+				{ "en", "  juva\nPrints information on all the commands.\n  juva nomen\nPrints information on the command 'nomen'.\n" };
+		}
 		["imperatum" "authoriza"]
 		structura authoriza hereditat imperatum {
 			functio nihil exeque(~dordo_linearum imperatum) iacit redefini {
@@ -354,11 +412,25 @@ spatium imperata {
 				}
 			}
 			functio logicum comple(~imperata.contextus_complendi ctx) iacit redefini { responde non; }
+			functio linea descriptio(logicum ultima) iacit redefini { si (ultima) responde descriptio_imperati_ultima; alioqui responde descriptio_imperati_brevis; }
+			constatus descriptio_imperati_brevis = "permissiones ad servo impetrat"
+				{ "ru", "получает права доступа к серверу" }
+				{ "en", "retrieves the access permissions to the server" };
+			constatus descriptio_imperati_ultima = "  authoriza [nomen] [clavis]\nPermissiones ad servo impetrat. 'nomen' - nomen usoris, 'clavis' - clavis usoris. Nominem et clavem defalta utitur si non data sunt.\n"
+				{ "ru", "  authoriza [nomen] [clavis]\nПолучает права доступа к серверу. 'nomen' - имя пользователя, 'clavis' - пароль. Если они не заданы, то использует значения умолчания.\n" }
+				{ "en", "  authoriza [nomen] [clavis]\nRetrieves the access permissions to the server. 'nomen' - the user name, 'clavis' - the password. The default user name and password are being used when not specified.\n" };
 		}
 		["imperatum" "exi"]
 		structura exire hereditat imperatum {
 			functio nihil exeque(~dordo_linearum imperatum) iacit redefini { ctx.procede = non; }
 			functio logicum comple(~imperata.contextus_complendi ctx) iacit redefini { responde non; }
+			functio linea descriptio(logicum ultima) iacit redefini { si (ultima) responde descriptio_imperati_ultima; alioqui responde descriptio_imperati_brevis; }
+			constatus descriptio_imperati_brevis = "ex applicatione exit"
+				{ "ru", "выход из приложения" }
+				{ "en", "exit from the application" };
+			constatus descriptio_imperati_ultima = "  exi\nEx applicatione exit.\n"
+				{ "ru", "  exi\nВыход из приложения.\n" }
+				{ "en", "  exi\nExit from the application.\n" };
 		}
 		["imperatum" "depura"]
 		structura depura hereditat imperatum {
@@ -373,11 +445,25 @@ spatium imperata {
 					responde comple_cum_variatis(ctx, vr);
 				} alioqui responde non;
 			}
+			functio linea descriptio(logicum ultima) iacit redefini { si (ultima) responde descriptio_imperati_ultima; alioqui responde descriptio_imperati_brevis; }
+			constatus descriptio_imperati_brevis = "culicarem depurat"
+				{ "ru", "очищает экран" }
+				{ "en", "clears the screen" };
+			constatus descriptio_imperati_ultima = "  depura [fundum]\nCulicarem depurat. Textum vel imaginem fundi (in modo cum argumento) removet.\n"
+				{ "ru", "  depura [fundum]\nОчищает экран. Удаляет текст или фоновое изображение (при наличии аргумента).\n" }
+				{ "en", "  depura [fundum]\nClears the screen. Removes the text or background image (when the argument is specified).\n" };
 		}
 		["imperatum" "persiste"]
 		structura persiste hereditat imperatum {
 			functio nihil exeque(~dordo_linearum imperatum) iacit redefini { con acsi (xx.xc)^.clode_fenestram = non; }
 			functio logicum comple(~imperata.contextus_complendi ctx) iacit redefini { responde non; }
+			functio linea descriptio(logicum ultima) iacit redefini { si (ultima) responde descriptio_imperati_ultima; alioqui responde descriptio_imperati_brevis; }
+			constatus descriptio_imperati_brevis = "fenestram consolatorii persistere afficit"
+				{ "ru", "делает окно консоли постоянным" }
+				{ "en", "makes the console window persistent" };
+			constatus descriptio_imperati_ultima = "  persiste\nFenestram consolatorii persistere afficit (XC sole).\n"
+				{ "ru", "  persiste\nДелает окно консоли постоянным (только консоль XC).\n" }
+				{ "en", "  persiste\nMakes the console window persistent (XC only).\n" };
 		}
 		["imperatum" "permissiones"]
 		structura permissiones hereditat imperatum {
@@ -397,6 +483,13 @@ spatium imperata {
 				}
 			}
 			functio logicum comple(~imperata.contextus_complendi ctx) iacit redefini { responde non; }
+			functio linea descriptio(logicum ultima) iacit redefini { si (ultima) responde descriptio_imperati_ultima; alioqui responde descriptio_imperati_brevis; }
+			constatus descriptio_imperati_brevis = "permissiones usoris currentis exponit"
+				{ "ru", "выводит права текущего пользователя" }
+				{ "en", "prints the permissions of the current user" };
+			constatus descriptio_imperati_ultima = "  permissiones\nPermissiones usoris currentis exponit.\n"
+				{ "ru", "  permissiones\nВыводит права текущего пользователя.\n" }
+				{ "en", "  permissiones\nPrints the permissions of the current user.\n" };
 		}
 		["imperatum" "siste"]
 		structura siste hereditat imperatum {
@@ -413,6 +506,13 @@ spatium imperata {
 					responde comple_cum_variatis(ctx, vr);
 				} alioqui responde non;
 			}
+			functio linea descriptio(logicum ultima) iacit redefini { si (ultima) responde descriptio_imperati_ultima; alioqui responde descriptio_imperati_brevis; }
+			constatus descriptio_imperati_brevis = "servum/machinam servi sistit"
+				{ "ru", "останавливает сервер/машину сервера" }
+				{ "en", "stops the server/server's machine" };
+			constatus descriptio_imperati_ultima = "  siste [machinam]\nServum vel machinam servi (per argumento) sistit.\n"
+				{ "ru", "  siste [machinam]\nОстанавливает сервер или машину сервера (при наличии аргумента).\n" }
+				{ "en", "  siste [machinam]\nStops the server or the server's machine (when there is an argument).\n" };
 		}
 		["imperatum" "recipe"]
 		structura recipe hereditat imperatum {
@@ -429,6 +529,13 @@ spatium imperata {
 					responde comple_cum_variatis(ctx, vr);
 				} alioqui responde non;
 			}
+			functio linea descriptio(logicum ultima) iacit redefini { si (ultima) responde descriptio_imperati_ultima; alioqui responde descriptio_imperati_brevis; }
+			constatus descriptio_imperati_brevis = "servum/machinam servi recipit"
+				{ "ru", "перезапускает сервер/машину сервера" }
+				{ "en", "restart the server/server's machine" };
+			constatus descriptio_imperati_ultima = "  recipe [machinam]\nServum vel machinam servi (per argumento) recipit.\n"
+				{ "ru", "  recipe [machinam]\nПерезапускает сервер или машину сервера (при наличии аргумента).\n" }
+				{ "en", "  recipe [machinam]\nRestarts the server or the server's machine (when there is an argument).\n" };
 		}
 		["imperatum" "status"]
 		structura status hereditat imperatum {
@@ -470,6 +577,13 @@ spatium imperata {
 				scribe_extensiones(status, -1, "");
 			}
 			functio logicum comple(~imperata.contextus_complendi ctx) iacit redefini { responde non; }
+			functio linea descriptio(logicum ultima) iacit redefini { si (ultima) responde descriptio_imperati_ultima; alioqui responde descriptio_imperati_brevis; }
+			constatus descriptio_imperati_brevis = "statum servi exponit"
+				{ "ru", "выводит состояние сервера" }
+				{ "en", "prints the server's state" };
+			constatus descriptio_imperati_ultima = "  status\nInformationem per potentia et moduli onerati servi exponit.\n"
+				{ "ru", "  status\nВыводит информацию о состоянии питания и загруженных модулях сервера.\n" }
+				{ "en", "  status\nPrints the information on the server's power and modules loaded.\n" };
 		}
 		["imperatum" "usores"]
 		structura usores hereditat imperatum {
@@ -488,6 +602,13 @@ spatium imperata {
 					responde comple_cum_variatis(ctx, vr);
 				} alioqui responde non;
 			}
+			functio linea descriptio(logicum ultima) iacit redefini { si (ultima) responde descriptio_imperati_ultima; alioqui responde descriptio_imperati_brevis; }
+			constatus descriptio_imperati_brevis = "usores enumerat et salvat"
+				{ "ru", "перечисляет и сохраняет пользователей" }
+				{ "en", "enumerates and saves users" };
+			constatus descriptio_imperati_ultima = "  usores\nUsores enumerat.\n  usores salva\nUsores salvat (per alternationibus imperatae 'usor').\n"
+				{ "ru", "  usores\nПеречисляет пользователей.\n  usores salva\nСохраняет пользователей (правки команды 'usor').\n" }
+				{ "en", "  usores\nEnumerates users.\n  usores salva\nSaves users (the 'usor' command's changes).\n" };
 		}
 		["imperatum" "usor"]
 		structura usor hereditat imperatum {
@@ -540,6 +661,13 @@ spatium imperata {
 					responde comple_cum_variatis(ctx, vr);
 				} alioqui responde non;
 			}
+			functio linea descriptio(logicum ultima) iacit redefini { si (ultima) responde descriptio_imperati_ultima; alioqui responde descriptio_imperati_brevis; }
+			constatus descriptio_imperati_brevis = "ab usore regit"
+				{ "ru", "управляет пользователем" }
+				{ "en", "controls a user" };
+			constatus descriptio_imperati_ultima = "  usor adde <nomen> <clavis>\nUsorem novum creat.\n  usor remove <nomen>\nUsorem removet.\n  usor renomina <nomen> <nomen novum>\nUsorem renominat vel redefinit.\n  usor clavis <nomen> [clavis]\nClavem usoris exponit.\n  usor permissio <nomen> [nomen permissionis] [valor]\nPermissiones usoris enumerat vel permissionem creat/redefinit.\n"
+				{ "ru", "  usor adde <nomen> <clavis>\nСоздаёт нового пользователя.\n  usor remove <nomen>\nУдаляет пользователя.\n  usor renomina <nomen> <nomen novum>\nПереименовывает пользователя.\n  usor clavis <nomen> [clavis]\nВыводит или перезаписывает пароль пользователя.\n  usor permissio <nomen> [nomen permissionis] [valor]\nПеречисляет права пользователя или создаёт/перезаписывает право.\n" }
+				{ "en", "  usor adde <nomen> <clavis>\nCreates a new user.\n  usor remove <nomen>\nRemoves a user.\n  usor renomina <nomen> <nomen novum>\nRenames a user.\n  usor clavis <nomen> [clavis]\nPrints or overwrites the user's password.\n  usor permissio <nomen> [nomen permissionis] [valor]\nEnumerates user's permissions or creates/overwrite a specific permission.\n" };
 		}
 		["imperatum" "cd"]
 		structura cd hereditat imperatum {
@@ -558,6 +686,13 @@ spatium imperata {
 					responde comple_cum_semitis_remotis(ctx, non);
 				} alioqui responde non;
 			}
+			functio linea descriptio(logicum ultima) iacit redefini { si (ultima) responde descriptio_imperati_ultima; alioqui responde descriptio_imperati_brevis; }
+			constatus descriptio_imperati_brevis = "locationem currentem in servo permutat"
+				{ "ru", "изменяет текущее рабочее расположение на сервере" }
+				{ "en", "changes the current working location on the server" };
+			constatus descriptio_imperati_ultima = "  cd <semita>\nLocationem currentem in servo permutat.\n"
+				{ "ru", "  cd <semita>\nИзменяет текущее рабочее расположение на сервере.\n" }
+				{ "en", "  cd <semita>\nChanges the current working location on the server.\n" };
 		}
 		["imperatum" "pwd"]
 		structura pwd hereditat imperatum {
@@ -567,6 +702,13 @@ spatium imperata {
 				con.scribe_lineam(ctx.collectorium_currens^.semita);
 			}
 			functio logicum comple(~imperata.contextus_complendi ctx) iacit redefini { responde non; }
+			functio linea descriptio(logicum ultima) iacit redefini { si (ultima) responde descriptio_imperati_ultima; alioqui responde descriptio_imperati_brevis; }
+			constatus descriptio_imperati_brevis = "locationem currentem in servo exponit"
+				{ "ru", "печатает текущее рабочее расположение на сервере" }
+				{ "en", "prints the current working location on the server" };
+			constatus descriptio_imperati_ultima = "  pwd\nLocationem currentem in servo exponit.\n"
+				{ "ru", "  pwd\nПечатает текущее рабочее расположение на сервере.\n" }
+				{ "en", "  pwd\nPrints the current working location on the server.\n" };
 		}
 		["imperatum" "ls"]
 		structura ls hereditat imperatum {
@@ -662,6 +804,13 @@ spatium imperata {
 					responde comple_cum_semitis_remotis(ctx, non);
 				} alioqui responde non;
 			}
+			functio linea descriptio(logicum ultima) iacit redefini { si (ultima) responde descriptio_imperati_ultima; alioqui responde descriptio_imperati_brevis; }
+			constatus descriptio_imperati_brevis = "objectos in locatione currente/ex argumento exponit"
+				{ "ru", "выводит объекты в текущем/заданном аргументом расположении" }
+				{ "en", "prints objects in the current/specified by argument location" };
+			constatus descriptio_imperati_ultima = "  ls [semita]\nObjectos in locatione currente vel ex argumento exponit.\n"
+				{ "ru", "  ls [semita]\nВыводит объекты в текущем или заданном аргументом расположении.\n" }
+				{ "en", "  ls [semita]\nPrints objects in the current or specified by argument location.\n" };
 		}
 		["imperatum" "mv"]
 		structura mv hereditat imperatum {
@@ -676,6 +825,13 @@ spatium imperata {
 					responde comple_cum_semitis_remotis(ctx, sic);
 				} alioqui responde non;
 			}
+			functio linea descriptio(logicum ultima) iacit redefini { si (ultima) responde descriptio_imperati_ultima; alioqui responde descriptio_imperati_brevis; }
+			constatus descriptio_imperati_brevis = "limam in servo movet"
+				{ "ru", "перемещает файл на сервере" }
+				{ "en", "moves a file within the server" };
+			constatus descriptio_imperati_ultima = "  mv <origo> <destinatio>\nLimam in servo movet.\n"
+				{ "ru", "  mv <origo> <destinatio>\nПеремещает файл на сервере.\n" }
+				{ "en", "  mv <origo> <destinatio>\nMoves a file within the server.\n" };
 		}
 		["imperatum" "cp"]
 		structura cp hereditat imperatum {
@@ -719,6 +875,13 @@ spatium imperata {
 					responde comple_cum_semitis_remotis(ctx, sic);
 				} alioqui responde non;
 			}
+			functio linea descriptio(logicum ultima) iacit redefini { si (ultima) responde descriptio_imperati_ultima; alioqui responde descriptio_imperati_brevis; }
+			constatus descriptio_imperati_brevis = "limam in servo exscribit"
+				{ "ru", "копирует файл на сервере" }
+				{ "en", "copies a file within the server" };
+			constatus descriptio_imperati_ultima = "  cp <origo> <destinatio>\nLimam in servo exscribit.\n"
+				{ "ru", "  cp <origo> <destinatio>\nКопирует файл на сервере.\n" }
+				{ "en", "  cp <origo> <destinatio>\nCopies a file within the server.\n" };
 		}
 		["imperatum" "rm"]
 		structura rm hereditat imperatum {
@@ -741,6 +904,13 @@ spatium imperata {
 					responde comple_cum_semitis_remotis(ctx, sic);
 				} alioqui responde non;
 			}
+			functio linea descriptio(logicum ultima) iacit redefini { si (ultima) responde descriptio_imperati_ultima; alioqui responde descriptio_imperati_brevis; }
+			constatus descriptio_imperati_brevis = "limam in servo removet"
+				{ "ru", "удаляет файл на сервере" }
+				{ "en", "removes a file within the server" };
+			constatus descriptio_imperati_ultima = "  rm <lima>\nLimam in servo removet.\n"
+				{ "ru", "  rm <lima>\nУдаляет файл на сервере.\n" }
+				{ "en", "  rm <lima>\nRemoves a file within the server.\n" };
 		}
 		["imperatum" "mkdir"]
 		structura mkdir hereditat imperatum {
@@ -755,6 +925,13 @@ spatium imperata {
 					responde comple_cum_semitis_remotis(ctx, non);
 				} alioqui responde non;
 			}
+			functio linea descriptio(logicum ultima) iacit redefini { si (ultima) responde descriptio_imperati_ultima; alioqui responde descriptio_imperati_brevis; }
+			constatus descriptio_imperati_brevis = "collectorium in servo creat"
+				{ "ru", "создаёт каталог на сервере" }
+				{ "en", "creates a directory within the server" };
+			constatus descriptio_imperati_ultima = "  mkdir <semita>\nCollectorium in servo creat.\n"
+				{ "ru", "  mkdir <semita>\nСоздаёт каталог на сервере.\n" }
+				{ "en", "  mkdir <semita>\nCreates a directory within the server.\n" };
 		}
 		["imperatum" "quota"]
 		structura quota hereditat imperatum {
@@ -772,6 +949,13 @@ spatium imperata {
 					responde comple_cum_semitis_remotis(ctx, non);
 				} alioqui responde non;
 			}
+			functio linea descriptio(logicum ultima) iacit redefini { si (ultima) responde descriptio_imperati_ultima; alioqui responde descriptio_imperati_brevis; }
+			constatus descriptio_imperati_brevis = "quantitatem memoriae in locatione currente/ex argumento exponit"
+				{ "ru", "выводит количество памяти в текущем/заданном аргументом расположении" }
+				{ "en", "prints memory available in the current/specified by argument location" };
+			constatus descriptio_imperati_ultima = "  quota [semita]\nQuantitatem memoriae in locatione currente vel ex argumento exponit:\nMemoria ultima / memoria libera / memoria libera per usore.\n"
+				{ "ru", "  quota [semita]\nВыводит количество памяти в текущем или заданном аргументом расположении:\nОбщий объём памяти / свободная память / свободная память для пользователя.\n" }
+				{ "en", "  quota [semita]\nPrints memory available in the current or specified by argument location:\nTotal memory / free memory / free memory per user.\n" };
 		}
 		["imperatum" "chmod"]
 		structura chmod hereditat imperatum {
@@ -788,6 +972,13 @@ spatium imperata {
 					responde comple_cum_semitis_remotis(ctx, sic);
 				} alioqui responde non;
 			}
+			functio linea descriptio(logicum ultima) iacit redefini { si (ultima) responde descriptio_imperati_ultima; alioqui responde descriptio_imperati_brevis; }
+			constatus descriptio_imperati_brevis = "Unix permissiones limae redefinit"
+				{ "ru", "переопределяет Unix-права доступа к файлу" }
+				{ "en", "overwrites the Unix file permissions" };
+			constatus descriptio_imperati_ultima = "  chmod <modus> <semita>\nUnix permissiones limae redefinit.\n"
+				{ "ru", "  chmod <modus> <semita>\nПереопределяет Unix-права доступа к файлу.\n" }
+				{ "en", "  chmod <modus> <semita>\nOverwrites the Unix file permissions.\n" };
 		}
 		["imperatum" "onera"]
 		structura onera hereditat imperatum {
@@ -834,6 +1025,13 @@ spatium imperata {
 					responde comple_cum_semitis_remotis(ctx, sic);
 				} alioqui responde non;
 			}
+			functio linea descriptio(logicum ultima) iacit redefini { si (ultima) responde descriptio_imperati_ultima; alioqui responde descriptio_imperati_brevis; }
+			constatus descriptio_imperati_brevis = "limam ex hospite in servum exscribit"
+				{ "ru", "копирует файл с хоста на сервер" }
+				{ "en", "copies a file from host to server" };
+			constatus descriptio_imperati_ultima = "  onera <origo> <destinatio>\nLimam ex hospite in servum exscribit.\n"
+				{ "ru", "  onera <origo> <destinatio>\nКопирует файл с хоста на сервер.\n" }
+				{ "en", "  onera <origo> <destinatio>\nCopies a file from host to server.\n" };
 		}
 		["imperatum" "pone"]
 		structura pone hereditat imperatum {
@@ -887,6 +1085,13 @@ spatium imperata {
 					responde comple_cum_semitis_localibus(ctx, sic);
 				} alioqui responde non;
 			}
+			functio linea descriptio(logicum ultima) iacit redefini { si (ultima) responde descriptio_imperati_ultima; alioqui responde descriptio_imperati_brevis; }
+			constatus descriptio_imperati_brevis = "limam ex servo in hospitem exscribit"
+				{ "ru", "копирует файл с сервера на хост" }
+				{ "en", "copies a file from server to host" };
+			constatus descriptio_imperati_ultima = "  pone <origo> <destinatio>\nLimam ex servo in hospitem exscribit.\n"
+				{ "ru", "  pone <origo> <destinatio>\nКопирует файл с сервера на хост.\n" }
+				{ "en", "  pone <origo> <destinatio>\nCopies a file from server to host.\n" };
 		}
 		["imperatum" "sha256"]
 		structura sha256 hereditat imperatum {
@@ -904,6 +1109,13 @@ spatium imperata {
 					responde comple_cum_semitis_remotis(ctx, sic);
 				} alioqui responde non;
 			}
+			functio linea descriptio(logicum ultima) iacit redefini { si (ultima) responde descriptio_imperati_ultima; alioqui responde descriptio_imperati_brevis; }
+			constatus descriptio_imperati_brevis = "SHA-256 digestum limae exponit"
+				{ "ru", "выводит SHA-256 хэш файла" }
+				{ "en", "prints the SHA-256 hash of a file" };
+			constatus descriptio_imperati_ultima = "  sha256 <semita>\nSHA-256 digestum limae exponit.\n"
+				{ "ru", "  sha256 <semita>\nВыводит SHA-256 хэш файла.\n" }
+				{ "en", "  sha256 <semita>\nPrints the SHA-256 hash of a file.\n" };
 		}
 		["imperatum" "expone"]
 		structura expone hereditat imperatum {
@@ -947,6 +1159,13 @@ spatium imperata {
 					responde comple_cum_semitis_remotis(ctx, sic);
 				} alioqui responde non;
 			}
+			functio linea descriptio(logicum ultima) iacit redefini { si (ultima) responde descriptio_imperati_ultima; alioqui responde descriptio_imperati_brevis; }
+			constatus descriptio_imperati_brevis = "data limae in consolatorium exponit"
+				{ "ru", "выводит данные файла в консоль" }
+				{ "en", "outputs the file's data into the console" };
+			constatus descriptio_imperati_ultima = "  expone textum <semita>\n  expone imago <semita>\nData limae in consolatorium exponit. Ute 'textum' per limis scriptosis, 'imago' per imaginibus (XC sole).\n"
+				{ "ru", "  expone textum <semita>\n  expone imago <semita>\nВыводит данные файла в консоль. Используйте 'textum' для текстовых файлов, 'imago' для изображений (только консоль XC).\n" }
+				{ "en", "  expone textum <semita>\n  expone imago <semita>\nOutputs the file's data into the console. Use 'textum' for text files, 'imago' for images (XC only).\n" };
 		}
 	}
 	genus completor : responsor_processoris {

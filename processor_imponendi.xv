@@ -116,9 +116,9 @@ spatium impositio {
 									nint vx = 0;
 									per (var i : variati) {
 										var lr = variati[i].primus.longitudo;
-										si (magn.x - vx + 1 < lr && vx) { _con << "\r\n  "; vx = 2; }
-										alioqui si (vx) { _con << " "; vx++; }
-										alioqui { _con << "  "; vx = 2; }
+										si (!vx) { _con << "  "; vx = 2; }
+										si (magn.x - vx - 1 < lr && vx > 2) { _con << "\r\n  "; vx = 2; }
+										alioqui si (vx > 2) { _con << " "; vx++; }
 										_con.color_primus = variati[i].secundus;
 										_con << variati[i].primus;
 										vx += lr;
